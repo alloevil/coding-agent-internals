@@ -1,21 +1,26 @@
-# Coding Agent Internals — 2026 Deep Comparison / 工具实现深度对比
-
-> **EN**: Not feature-list comparisons — deep-dive into **how** each agent's tools are implemented.
-> **ZH**: 不是功能列表搬运，而是**工具实现层面**的横向对比。
-
-**12 Agents · 5 Dimensions · 2026** | **12 个 Agent · 5 个维度 · 聚焦 2026**
-
-**Last updated / 最后更新：2026-08-28**
-
----
-
 <p align="center">
-  <a href="#english">🇺🇸 English</a> · <a href="#中文">🇨🇳 中文</a>
+  <h1 align="center">🔍 Coding Agent Internals</h1>
+  <p align="center"><strong>2026 Deep Comparison / 工具实现深度对比</strong></p>
+  <p align="center">
+    <img src="https://img.shields.io/badge/Agents-12-blue?style=flat-square" alt="12 Agents">
+    <img src="https://img.shields.io/badge/Dimensions-5-green?style=flat-square" alt="5 Dimensions">
+    <img src="https://img.shields.io/badge/Year-2026-purple?style=flat-square" alt="2026">
+    <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License">
+    <img src="https://img.shields.io/badge/Last%20Updated-Aug%2028-orange?style=flat-square" alt="Last Updated">
+  </p>
+  <p align="center">
+    <a href="#english">🇺🇸 English</a> · <a href="#中文">🇨🇳 中文</a>
+  </p>
 </p>
 
 ---
 
-## English
+> **EN**: Not feature-list comparisons — deep-dive into **how** each agent's tools are implemented.
+> **ZH**: 不是功能列表搬运，而是**工具实现层面**的横向对比。
+
+---
+
+## 🇺🇸 English
 
 ### Why This Exists?
 
@@ -27,24 +32,34 @@ Most AI coding agent comparisons are feature checklists. This project focuses on
 
 These details define the **ceiling** of what a tool can do.
 
-### Agents Covered
+---
 
-| Agent | ⭐ Stars | Type |
-|-------|----------|------|
-| [Claude Code](agents/claude-code.md) | 143K | Terminal CLI |
-| [Codex](agents/codex.md) | 119K | CLI + Cloud |
-| [omp](agents/omp.md) | 28K | Terminal CLI |
-| [Hermes Agent](agents/hermes.md) | 237K | Terminal CLI |
-| [Aider](agents/aider.md) | 48K | Terminal CLI |
-| [OpenCode](agents/opencode.md) | 202K | Terminal CLI |
-| [Gemini CLI](agents/gemini-cli.md) | 107K | Terminal CLI |
-| [Copilot CLI](agents/copilot-cli.md) | 11K | Terminal CLI |
-| [Cursor](agents/cursor.md) | — | AI IDE |
-| [Windsurf](agents/windsurf.md) | — | AI IDE |
-| [Cline](agents/cline.md) | 67K | VS Code Extension |
-| [Devin](agents/devin.md) | — | Standalone Platform |
+### 📊 Agents Covered
 
-### Terminal CLI Comparison
+<table>
+<tr>
+<td align="center"><a href="agents/claude-code.md"><b>Claude Code</b><br><img src="https://img.shields.io/github/stars/anthropics/claude-code?style=social" alt="stars"></a></td>
+<td align="center"><a href="agents/codex.md"><b>Codex</b><br><img src="https://img.shields.io/github/stars/openai/codex?style=social" alt="stars"></a></td>
+<td align="center"><a href="agents/omp.md"><b>omp</b><br><img src="https://img.shields.io/github/stars/can1357/oh-my-pi?style=social" alt="stars"></a></td>
+<td align="center"><a href="agents/hermes.md"><b>Hermes</b><br><img src="https://img.shields.io/github/stars/NousResearch/hermes-agent?style=social" alt="stars"></a></td>
+</tr>
+<tr>
+<td align="center"><a href="agents/aider.md"><b>Aider</b><br><img src="https://img.shields.io/github/stars/Aider-AI/aider?style=social" alt="stars"></a></td>
+<td align="center"><a href="agents/opencode.md"><b>OpenCode</b><br><img src="https://img.shields.io/github/stars/anomalyco/opencode?style=social" alt="stars"></a></td>
+<td align="center"><a href="agents/gemini-cli.md"><b>Gemini CLI</b><br><img src="https://img.shields.io/github/stars/google-gemini/gemini-cli?style=social" alt="stars"></a></td>
+<td align="center"><a href="agents/copilot-cli.md"><b>Copilot CLI</b><br><img src="https://img.shields.io/github/stars/github/copilot-cli?style=social" alt="stars"></a></td>
+</tr>
+<tr>
+<td align="center"><a href="agents/cursor.md"><b>Cursor</b><br><img src="https://img.shields.io/badge/AI%20IDE-blue?style=flat" alt="IDE"></a></td>
+<td align="center"><a href="agents/windsurf.md"><b>Windsurf</b><br><img src="https://img.shields.io/badge/AI%20IDE-blue?style=flat" alt="IDE"></a></td>
+<td align="center"><a href="agents/cline.md"><b>Cline</b><br><img src="https://img.shields.io/github/stars/cline/cline?style=social" alt="stars"></a></td>
+<td align="center"><a href="agents/devin.md"><b>Devin</b><br><img src="https://img.shields.io/badge/Standalone-gray?style=flat" alt="standalone"></a></td>
+</tr>
+</table>
+
+---
+
+### 🔬 Terminal CLI Comparison
 
 | Dim | Claude Code | Codex | omp | Hermes | Aider | OpenCode | Gemini CLI | Copilot CLI |
 |-----|------------|-------|-----|--------|-------|----------|-----------|------------|
@@ -66,49 +81,65 @@ These details define the **ceiling** of what a tool can do.
 | SWE-bench | 88.6% | 82.6% | — | — | — | — | — | — |
 | Price | $20-200/mo | $20-200/mo | free BYO | free BYO | free BYO | free BYO | free tier | $10/mo |
 
-### Key Findings
+---
 
-**Search: 3 Levels**
+### 💡 Key Findings
+
+<details>
+<summary><b>🔍 Search: 3 Levels</b></summary>
+
 ```
 Level 1: shell fork rg/grep     ← Claude Code, Hermes, Aider, OpenCode
 Level 2: IDE-native search      ← Cursor, Windsurf, Copilot
 Level 3: in-process engine      ← omp (Rust ripgrep — zero fork/exec)
 ```
+</details>
 
-**Edit: 3 Levels**
+<details>
+<summary><b>✏️ Edit: 3 Levels</b></summary>
+
 ```
 Level 1: plain str_replace      ← most tools
 Level 2: diff + line numbers    ← Aider
 Level 3: hash-anchored + AST    ← omp (no whitespace wars, no stale file corruption)
 ```
+</details>
 
-**Memory: 3 Levels**
+<details>
+<summary><b>🧠 Memory: 3 Levels</b></summary>
+
 ```
 None: fresh each session        ← Claude Code, Codex, Aider, OpenCode
 Session-level: project-scoped   ← omp (Hindsight — retain/recall, project isolation)
 Semantic: cross-session search  ← Hermes (mem0 — semantic retrieval)
 ```
+</details>
 
-**Security: 3 Levels**
+<details>
+<summary><b>🔒 Security: 3 Levels</b></summary>
+
 ```
 No isolation: creds everywhere  ← most local tools
 Cloud sandbox: isolated env     ← Codex, Devin
 Credential Guard: audit log     ← Hermes (unified chokepoint + logging)
 ```
-
-### Deep Dives
-
-| Dimension | File | Core Question |
-|-----------|------|---------------|
-| Search | [dimensions/search.md](dimensions/search.md) | grep vs rg vs in-process? |
-| Edit | [dimensions/editing.md](dimensions/editing.md) | plain text vs hash vs AST? |
-| Memory | [dimensions/memory.md](dimensions/memory.md) | mem0 vs none vs compression? |
-| Security | [dimensions/security.md](dimensions/security.md) | guard vs sandbox vs none? |
-| Sub-agents | [dimensions/subagents.md](dimensions/subagents.md) | worktree vs MOA vs cloud? |
+</details>
 
 ---
 
-## 中文
+### 📁 Deep Dives
+
+| Dimension | File | Core Question |
+|-----------|------|---------------|
+| 🔍 Search | [dimensions/search.md](dimensions/search.md) | grep vs rg vs in-process? |
+| ✏️ Edit | [dimensions/editing.md](dimensions/editing.md) | plain text vs hash vs AST? |
+| 🧠 Memory | [dimensions/memory.md](dimensions/memory.md) | mem0 vs none vs compression? |
+| 🔒 Security | [dimensions/security.md](dimensions/security.md) | guard vs sandbox vs none? |
+| 🤖 Sub-agents | [dimensions/subagents.md](dimensions/subagents.md) | worktree vs MOA vs cloud? |
+
+---
+
+## 🇨🇳 中文
 
 ### 为什么做这个？
 
@@ -120,7 +151,9 @@ Credential Guard: audit log     ← Hermes (unified chokepoint + logging)
 
 这些细节决定了工具的**上限**，而不是"能不能用"。
 
-### 终端 CLI Agent 对比
+---
+
+### 📊 终端 CLI Agent 对比
 
 | 维度 | Claude Code | Codex | omp | Hermes | Aider | OpenCode | Gemini CLI | Copilot CLI |
 |------|------------|-------|-----|--------|-------|----------|-----------|------------|
@@ -142,63 +175,80 @@ Credential Guard: audit log     ← Hermes (unified chokepoint + logging)
 | SWE-bench | 88.6% | 82.6% | — | — | — | — | — | — |
 | 价格 | $20-200/月 | $20-200/月 | 免费 BYO | 免费 BYO | 免费 BYO | 免费 BYO | 免费额度 | $10/月 |
 
-### AI IDE / 插件
+---
 
-| 维度 | Cursor | Windsurf | Copilot | Cline | Trae | CodeBuddy |
-|------|--------|----------|---------|-------|------|-----------|
-| 出品方 | Anysphere | Codeium | GitHub/MS | 开源社区 | 字节跳动 | 腾讯 |
-| 形态 | VS Code Fork | VS Code Fork | IDE 插件 | VS Code 插件 | 独立 IDE | IDE/插件 |
-| Tab 补全 | ✅ **最强** | ✅ Cascade | ✅ | ❌ | ✅ | ✅ |
-| Agent 模式 | ✅ | ✅ | ✅ (2026) | ✅ | ✅ | ✅ |
-| MCP | ✅ | ✅ | ❌ | ✅ | ✅ | ❌ |
-| 开源 | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
-| 价格 | $20/月 | $15/月 | $10/月 | ✅ BYO Key | 免费额度 | 免费额度 |
+### 💡 核心发现
 
-### 核心发现
+<details>
+<summary><b>🔍 搜索实现的三个层次</b></summary>
 
-**搜索实现的三个层次**
 ```
 Level 1: shell 调用 rg/grep    ← Claude Code, Hermes, Aider, OpenCode
 Level 2: IDE 原生搜索           ← Cursor, Windsurf, Copilot
 Level 3: 进程内嵌引擎           ← omp (Rust ripgrep — 零 fork/exec)
 ```
+</details>
 
-**编辑方式的三个层次**
+<details>
+<summary><b>✏️ 编辑方式的三个层次</b></summary>
+
 ```
 Level 1: 纯文本 str_replace    ← 大多数工具
 Level 2: diff + 行号定位       ← Aider
 Level 3: hash 锚定 + AST      ← omp（消除 whitespace 战争和 stale file 问题）
 ```
+</details>
 
-**记忆系统的三个层次**
+<details>
+<summary><b>🧠 记忆系统的三个层次</b></summary>
+
 ```
 无记忆：每次会话从零开始       ← Claude Code, Codex, Aider, OpenCode
 会话级记忆：项目内持久化       ← omp (Hindsight Memory — retain/recall，项目级隔离)
 语义记忆：跨会话语义检索       ← Hermes (mem0 — 按语义而非关键词检索)
 ```
+</details>
 
-**安全模型的三个层次**
+<details>
+<summary><b>🔒 安全模型的三个层次</b></summary>
+
 ```
 无隔离：凭证随处可用           ← 大多数本地工具
 云端沙箱：隔离执行环境         ← Codex, Devin
 凭证卫士：统一管控 + 审计日志  ← Hermes (Credential Guard)
 ```
+</details>
 
 ---
 
-## Contributing / 贡献
+### 📁 深度对比
 
-Contributions welcome! Especially:
-欢迎补充、纠正、更新。尤其是：
+| 维度 | 文件 | 核心问题 |
+|------|------|---------|
+| 🔍 代码搜索 | [dimensions/search.md](dimensions/search.md) | grep vs rg vs 内嵌引擎？ |
+| ✏️ 代码编辑 | [dimensions/editing.md](dimensions/editing.md) | 纯文本 vs hash vs AST？ |
+| 🧠 持久记忆 | [dimensions/memory.md](dimensions/memory.md) | mem0 vs 无 vs 上下文压缩？ |
+| 🔒 安全隔离 | [dimensions/security.md](dimensions/security.md) | 凭证隔离 vs 沙箱 vs 无？ |
+| 🤖 子代理 | [dimensions/subagents.md](dimensions/subagents.md) | worktree vs MOA vs 云端沙箱？ |
+
+---
+
+## 🤝 Contributing / 贡献
+
+Contributions welcome! / 欢迎贡献！
 
 - **Implementation details** with source-code evidence / 有源码级证据的实现细节
 - **Reproducible benchmarks** / 可复现的 benchmark 数据
 - **New agents** / 新发布的 agent 信息
 
-## License
+---
+
+## 📄 License
 
 MIT
 
 ---
 
-**Keywords**: AI coding agent, Claude Code, Codex, omp, oh-my-pi, Hermes Agent, Aider, OpenCode, Gemini CLI, Copilot CLI, Cursor, Windsurf, Cline, Devin, tool implementation, ripgrep, LSP, DAP, hash-anchored edits, 2026
+<p align="center">
+  <b>Keywords</b>: AI coding agent, Claude Code, Codex, omp, oh-my-pi, Hermes Agent, Aider, OpenCode, Gemini CLI, Copilot CLI, Cursor, Windsurf, Cline, Devin, tool implementation, ripgrep, LSP, DAP, hash-anchored edits, 2026
+</p>
