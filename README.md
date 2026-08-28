@@ -23,19 +23,19 @@ These details define the **ceiling** of what a tool can do.
 
 ### Agents Covered
 
-| Agent | Stars | Type |
-|-------|-------|------|
-| [Claude Code](agents/claude-code.md) | — | Terminal CLI |
-| [Codex](agents/codex.md) | — | CLI + Cloud |
-| [omp](agents/omp.md) | 17.7K+ | Terminal CLI |
-| [Hermes Agent](agents/hermes.md) | 50K+ | Terminal CLI |
-| [Aider](agents/aider.md) | — | Terminal CLI |
-| [OpenCode](agents/opencode.md) | — | Terminal CLI |
-| [Gemini CLI](agents/gemini-cli.md) | 97K+ | Terminal CLI |
-| [Copilot CLI](agents/copilot-cli.md) | — | Terminal CLI |
+| Agent | ⭐ Stars | Type |
+|-------|----------|------|
+| [Claude Code](agents/claude-code.md) | 143K | Terminal CLI |
+| [Codex](agents/codex.md) | 119K | CLI + Cloud |
+| [omp](agents/omp.md) | 28K | Terminal CLI |
+| [Hermes Agent](agents/hermes.md) | 237K | Terminal CLI |
+| [Aider](agents/aider.md) | 48K | Terminal CLI |
+| [OpenCode](agents/opencode.md) | 202K | Terminal CLI |
+| [Gemini CLI](agents/gemini-cli.md) | 107K | Terminal CLI |
+| [Copilot CLI](agents/copilot-cli.md) | 11K | Terminal CLI |
 | [Cursor](agents/cursor.md) | — | AI IDE |
 | [Windsurf](agents/windsurf.md) | — | AI IDE |
-| [Cline](agents/cline.md) | — | VS Code Extension |
+| [Cline](agents/cline.md) | 67K | VS Code Extension |
 | [Devin](agents/devin.md) | — | Standalone Platform |
 
 ### Terminal CLI Comparison
