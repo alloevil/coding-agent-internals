@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coding Agent Internals — 2026 Deep Comparison</title>
-  <meta name="description" content="Deep comparison of 12 AI coding agents (2026) — focusing on tool implementation, not feature checklists.">
+  <title>Coding Agent Internals — 2026 Deep Comparison / 工具实现深度对比</title>
+  <meta name="description" content="Deep comparison of 12 AI coding agents (2026) — focusing on tool implementation, not feature checklists. 12 个 AI 编程 Agent 工具实现深度对比。">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; }
@@ -12,6 +12,10 @@
     h1 { font-size: 2.5rem; color: #f0f6fc; margin-bottom: 0.5rem; }
     .subtitle { color: #8b949e; font-size: 1.1rem; margin-bottom: 2rem; }
     .badge { display: inline-block; background: #238636; color: #fff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; margin-right: 0.5rem; }
+    .lang-switch { float: right; display: flex; gap: 0.5rem; }
+    .lang-btn { background: #21262d; color: #8b949e; border: 1px solid #30363d; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    .lang-btn.active { background: #58a6ff; color: #fff; border-color: #58a6ff; }
+    .lang-btn:hover { border-color: #58a6ff; }
     .section { margin: 2rem 0; }
     .section h2 { color: #58a6ff; font-size: 1.4rem; margin-bottom: 1rem; border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; }
     table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
@@ -31,12 +35,28 @@
     .cta.secondary { background: #21262d; border: 1px solid #30363d; }
     .cta.secondary:hover { background: #30363d; }
     footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #21262d; color: #8b949e; font-size: 0.85rem; }
+    .bilingual .en, .bilingual .zh { display: none; }
+    .bilingual.show-en .en { display: block; }
+    .bilingual.show-en .en-inline { display: inline; }
+    .bilingual.show-zh .zh { display: block; }
+    .bilingual.show-zh .zh-inline { display: inline; }
+    .bilingual.show-en .zh, .bilingual.show-zh .en { display: none; }
+    .bilingual.show-en .zh-inline, .bilingual.show-zh .en-inline { display: none; }
+    .desc-en, .desc-zh { margin-bottom: 0.5rem; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Coding Agent Internals</h1>
-    <p class="subtitle">2026 工具实现深度对比 — 12 个 Agent · 5 个维度</p>
+  <div class="container bilingual show-en">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <h1>Coding Agent Internals</h1>
+        <p class="subtitle"><span class="en">2026 Deep Comparison — 12 Agents · 5 Dimensions</span><span class="zh">2026 工具实现深度对比 — 12 个 Agent · 5 个维度</span></p>
+      </div>
+      <div class="lang-switch">
+        <button class="lang-btn active" onclick="switchLang('en')">English</button>
+        <button class="lang-btn" onclick="switchLang('zh')">中文</button>
+      </div>
+    </div>
     <div>
       <span class="badge">12 Agents</span>
       <span class="badge">5 Dimensions</span>
@@ -44,50 +64,71 @@
     </div>
 
     <div class="section">
-      <h2>不是功能列表，是实现解剖</h2>
-      <p>关注的不是"有没有搜索功能"，而是<strong>搜索用的是 rg shell 调用、内嵌 ripgrep、还是 IDE 原生搜索</strong>。</p>
+      <h2><span class="en">Not Feature Lists — Implementation Anatomy</span><span class="zh">不是功能列表，是实现解剖</span></h2>
+      <p>
+        <span class="en">We don't care "does it have search?". We care <strong>whether search is a shell fork to <code>rg</code>, an in-process ripgrep, or IDE-native</strong>.</span>
+        <span class="zh">关注的不是"有没有搜索功能"，而是<strong>搜索用的是 rg shell 调用、内嵌 ripgrep、还是 IDE 原生搜索</strong>。</span>
+      </p>
     </div>
 
     <div class="section">
-      <h2>终端 CLI Agent</h2>
+      <h2><span class="en">Terminal CLI Agents</span><span class="zh">终端 CLI Agent</span></h2>
       <table>
-        <tr><th>Agent</th><th>搜索</th><th>编辑</th><th>LSP</th><th>记忆</th><th>价格</th></tr>
-        <tr><td>Claude Code</td><td>rg shell</td><td>纯文本</td><td>❌</td><td>❌</td><td>$20-200/月</td></tr>
-        <tr><td>Codex</td><td>内置</td><td>纯文本</td><td>❌</td><td>❌</td><td>$20-200/月</td></tr>
-        <tr><td><strong>omp</strong></td><td class="highlight">内嵌 ripgrep</td><td class="highlight">Hash 锚定 + AST</td><td class="highlight">✅ 13种</td><td class="highlight">Hindsight</td><td>免费 BYO</td></tr>
-        <tr><td><strong>Hermes</strong></td><td>rg shell</td><td>纯文本</td><td>❌</td><td class="highlight">mem0 语义</td><td>免费 BYO</td></tr>
-        <tr><td>Aider</td><td>rg shell</td><td>diff+行号</td><td>❌</td><td>❌</td><td>免费 BYO</td></tr>
-        <tr><td>OpenCode</td><td>rg shell</td><td>纯文本</td><td>有限</td><td>❌</td><td>免费 BYO</td></tr>
-        <tr><td>Gemini CLI</td><td>内置</td><td>纯文本</td><td>❌</td><td>❌</td><td>免费额度</td></tr>
-        <tr><td>Copilot CLI</td><td>内置</td><td>纯文本</td><td>❌</td><td>❌</td><td>$10/月</td></tr>
+        <tr>
+          <th>Agent</th>
+          <th><span class="en">Search</span><span class="zh">搜索</span></th>
+          <th><span class="en">Edit</span><span class="zh">编辑</span></th>
+          <th>LSP</th>
+          <th><span class="en">Memory</span><span class="zh">记忆</span></th>
+          <th><span class="en">Price</span><span class="zh">价格</span></th>
+        </tr>
+        <tr><td>Claude Code</td><td>rg shell</td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td>❌</td><td>$20-200/mo</td></tr>
+        <tr><td>Codex</td><td><span class="en">built-in</span><span class="zh">内置</span></td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td>❌</td><td>$20-200/mo</td></tr>
+        <tr><td><strong>omp</strong></td><td class="highlight"><span class="en">in-process ripgrep</span><span class="zh">内嵌 ripgrep</span></td><td class="highlight"><span class="en">hash-anchored + AST</span><span class="zh">Hash 锚定 + AST</span></td><td class="highlight">✅ 13 ops</td><td class="highlight">Hindsight</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
+        <tr><td><strong>Hermes</strong></td><td>rg shell</td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td class="highlight">mem0</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
+        <tr><td>Aider</td><td>rg shell</td><td>diff+line</td><td>❌</td><td>❌</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
+        <tr><td>OpenCode</td><td>rg shell</td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td><span class="en">limited</span><span class="zh">有限</span></td><td>❌</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
+        <tr><td>Gemini CLI</td><td><span class="en">built-in</span><span class="zh">内置</span></td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td>❌</td><td><span class="en">free tier</span><span class="zh">免费额度</span></td></tr>
+        <tr><td>Copilot CLI</td><td><span class="en">built-in</span><span class="zh">内置</span></td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td>❌</td><td>$10/mo</td></tr>
       </table>
     </div>
 
     <div class="section">
-      <h2>所有 Agent</h2>
+      <h2><span class="en">All Agents</span><span class="zh">所有 Agent</span></h2>
       <div class="agent-grid">
-        <div class="agent-card"><h3>Claude Code</h3><span class="type">Terminal CLI · Anthropic</span></div>
-        <div class="agent-card"><h3>Codex</h3><span class="type">CLI + Cloud · OpenAI</span></div>
-        <div class="agent-card"><h3>omp</h3><span class="type">Terminal CLI · 17.7K ⭐</span></div>
-        <div class="agent-card"><h3>Hermes Agent</h3><span class="type">Terminal CLI · 50K ⭐</span></div>
-        <div class="agent-card"><h3>Aider</h3><span class="type">Terminal CLI</span></div>
-        <div class="agent-card"><h3>OpenCode</h3><span class="type">Terminal CLI</span></div>
-        <div class="agent-card"><h3>Gemini CLI</h3><span class="type">Terminal CLI · 97K ⭐</span></div>
-        <div class="agent-card"><h3>Copilot CLI</h3><span class="type">Terminal CLI · GitHub</span></div>
+        <div class="agent-card"><h3>Claude Code</h3><span class="type"><span class="en">Terminal CLI · Anthropic</span><span class="zh">终端 CLI · Anthropic</span></span></div>
+        <div class="agent-card"><h3>Codex</h3><span class="type"><span class="en">CLI + Cloud · OpenAI</span><span class="zh">CLI + 云端 · OpenAI</span></span></div>
+        <div class="agent-card"><h3>omp</h3><span class="type"><span class="en">Terminal CLI · 17.7K ⭐</span><span class="zh">终端 CLI · 17.7K ⭐</span></span></div>
+        <div class="agent-card"><h3>Hermes Agent</h3><span class="type"><span class="en">Terminal CLI · 50K ⭐</span><span class="zh">终端 CLI · 50K ⭐</span></span></div>
+        <div class="agent-card"><h3>Aider</h3><span class="type"><span class="en">Terminal CLI</span><span class="zh">终端 CLI</span></span></div>
+        <div class="agent-card"><h3>OpenCode</h3><span class="type"><span class="en">Terminal CLI</span><span class="zh">终端 CLI</span></span></div>
+        <div class="agent-card"><h3>Gemini CLI</h3><span class="type"><span class="en">Terminal CLI · 97K ⭐</span><span class="zh">终端 CLI · 97K ⭐</span></span></div>
+        <div class="agent-card"><h3>Copilot CLI</h3><span class="type"><span class="en">Terminal CLI · GitHub</span><span class="zh">终端 CLI · GitHub</span></span></div>
         <div class="agent-card"><h3>Cursor</h3><span class="type">AI IDE</span></div>
         <div class="agent-card"><h3>Windsurf</h3><span class="type">AI IDE</span></div>
-        <div class="agent-card"><h3>Cline</h3><span class="type">VS Code 插件</span></div>
-        <div class="agent-card"><h3>Devin</h3><span class="type">独立平台</span></div>
+        <div class="agent-card"><h3>Cline</h3><span class="type"><span class="en">VS Code Extension</span><span class="zh">VS Code 插件</span></span></div>
+        <div class="agent-card"><h3>Devin</h3><span class="type"><span class="en">Standalone Platform</span><span class="zh">独立平台</span></span></div>
       </div>
     </div>
 
     <a class="cta" href="https://github.com/alloevil/coding-agent-internals">⭐ GitHub Repo</a>
-    <a class="cta secondary" href="https://github.com/alloevil/coding-agent-internals/blob/main/README.md">📖 阅读完整对比</a>
+    <a class="cta secondary" href="https://github.com/alloevil/coding-agent-internals/blob/main/README.md"><span class="en">📖 Full Comparison</span><span class="zh">📖 阅读完整对比</span></a>
 
     <footer>
       <p>Last updated: 2026-08-28 · MIT License</p>
-      <p>Keywords: AI coding agent, Claude Code, Codex, omp, oh-my-pi, Hermes Agent, Cursor, ripgrep, LSP, DAP, hash-anchored edits</p>
+      <p>Keywords: AI coding agent, Claude Code, Codex, omp, oh-my-pi, Hermes Agent, Cursor, ripgrep, LSP, DAP, hash-anchored edits, 2026</p>
     </footer>
   </div>
+
+  <script>
+    function switchLang(lang) {
+      const container = document.querySelector('.bilingual');
+      container.classList.remove('show-en', 'show-zh');
+      container.classList.add('show-' + lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="switchLang('${lang}')"]`).classList.add('active');
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    }
+  </script>
 </body>
 </html>
