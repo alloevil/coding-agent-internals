@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Agent Internals — 2026 Deep Comparison</title>
+  <meta name="description" content="Deep comparison of 12 AI coding agents (2026) — focusing on tool implementation, not feature checklists.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; }
+    .container { max-width: 960px; margin: 0 auto; padding: 2rem 1rem; }
+    h1 { font-size: 2.5rem; color: #f0f6fc; margin-bottom: 0.5rem; }
+    .subtitle { color: #8b949e; font-size: 1.1rem; margin-bottom: 2rem; }
+    .badge { display: inline-block; background: #238636; color: #fff; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; margin-right: 0.5rem; }
+    .section { margin: 2rem 0; }
+    .section h2 { color: #58a6ff; font-size: 1.4rem; margin-bottom: 1rem; border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    th { background: #161b22; color: #58a6ff; text-align: left; padding: 0.6rem; border: 1px solid #21262d; }
+    td { padding: 0.6rem; border: 1px solid #21262d; }
+    tr:nth-child(even) { background: #161b22; }
+    .highlight { color: #3fb950; font-weight: bold; }
+    .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .agent-card { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 1rem; transition: border-color 0.2s; }
+    .agent-card:hover { border-color: #58a6ff; }
+    .agent-card h3 { color: #f0f6fc; font-size: 1rem; margin-bottom: 0.3rem; }
+    .agent-card .type { color: #8b949e; font-size: 0.8rem; }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .cta { display: inline-block; background: #238636; color: #fff; padding: 0.8rem 1.5rem; border-radius: 6px; font-size: 1rem; margin: 1rem 0.5rem 1rem 0; transition: background 0.2s; }
+    .cta:hover { background: #2ea043; text-decoration: none; }
+    .cta.secondary { background: #21262d; border: 1px solid #30363d; }
+    .cta.secondary:hover { background: #30363d; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #21262d; color: #8b949e; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Coding Agent Internals</h1>
+    <p class="subtitle">2026 工具实现深度对比 — 12 个 Agent · 5 个维度</p>
+    <div>
+      <span class="badge">12 Agents</span>
+      <span class="badge">5 Dimensions</span>
+      <span class="badge">2026</span>
+    </div>
+
+    <div class="section">
+      <h2>不是功能列表，是实现解剖</h2>
+      <p>关注的不是"有没有搜索功能"，而是<strong>搜索用的是 rg shell 调用、内嵌 ripgrep、还是 IDE 原生搜索</strong>。</p>
+    </div>
+
+    <div class="section">
+      <h2>终端 CLI Agent</h2>
+      <table>
+        <tr><th>Agent</th><th>搜索</th><th>编辑</th><th>LSP</th><th>记忆</th><th>价格</th></tr>
+        <tr><td>Claude Code</td><td>rg shell</td><td>纯文本</td><td>❌</td><td>❌</td><td>$20-200/月</td></tr>
+        <tr><td>Codex</td><td>内置</td><td>纯文本</td><td>❌</td><td>❌</td><td>$20-200/月</td></tr>
+        <tr><td><strong>omp</strong></td><td class="highlight">内嵌 ripgrep</td><td class="highlight">Hash 锚定 + AST</td><td class="highlight">✅ 13种</td><td class="highlight">Hindsight</td><td>免费 BYO</td></tr>
+        <tr><td><strong>Hermes</strong></td><td>rg shell</td><td>纯文本</td><td>❌</td><td class="highlight">mem0 语义</td><td>免费 BYO</td></tr>
+        <tr><td>Aider</td><td>rg shell</td><td>diff+行号</td><td>❌</td><td>❌</td><td>免费 BYO</td></tr>
+        <tr><td>OpenCode</td><td>rg shell</td><td>纯文本</td><td>有限</td><td>❌</td><td>免费 BYO</td></tr>
+        <tr><td>Gemini CLI</td><td>内置</td><td>纯文本</td><td>❌</td><td>❌</td><td>免费额度</td></tr>
+        <tr><td>Copilot CLI</td><td>内置</td><td>纯文本</td><td>❌</td><td>❌</td><td>$10/月</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>所有 Agent</h2>
+      <div class="agent-grid">
+        <div class="agent-card"><h3>Claude Code</h3><span class="type">Terminal CLI · Anthropic</span></div>
+        <div class="agent-card"><h3>Codex</h3><span class="type">CLI + Cloud · OpenAI</span></div>
+        <div class="agent-card"><h3>omp</h3><span class="type">Terminal CLI · 17.7K ⭐</span></div>
+        <div class="agent-card"><h3>Hermes Agent</h3><span class="type">Terminal CLI · 50K ⭐</span></div>
+        <div class="agent-card"><h3>Aider</h3><span class="type">Terminal CLI</span></div>
+        <div class="agent-card"><h3>OpenCode</h3><span class="type">Terminal CLI</span></div>
+        <div class="agent-card"><h3>Gemini CLI</h3><span class="type">Terminal CLI · 97K ⭐</span></div>
+        <div class="agent-card"><h3>Copilot CLI</h3><span class="type">Terminal CLI · GitHub</span></div>
+        <div class="agent-card"><h3>Cursor</h3><span class="type">AI IDE</span></div>
+        <div class="agent-card"><h3>Windsurf</h3><span class="type">AI IDE</span></div>
+        <div class="agent-card"><h3>Cline</h3><span class="type">VS Code 插件</span></div>
+        <div class="agent-card"><h3>Devin</h3><span class="type">独立平台</span></div>
+      </div>
+    </div>
+
+    <a class="cta" href="https://github.com/alloevil/coding-agent-internals">⭐ GitHub Repo</a>
+    <a class="cta secondary" href="https://github.com/alloevil/coding-agent-internals/blob/main/README.md">📖 阅读完整对比</a>
+
+    <footer>
+      <p>Last updated: 2026-08-28 · MIT License</p>
+      <p>Keywords: AI coding agent, Claude Code, Codex, omp, oh-my-pi, Hermes Agent, Cursor, ripgrep, LSP, DAP, hash-anchored edits</p>
+    </footer>
+  </div>
+</body>
+</html>
