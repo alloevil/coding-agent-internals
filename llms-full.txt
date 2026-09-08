@@ -1,0 +1,95 @@
+# Coding Agent Internals
+
+Coding Agent Internals is a source-code-level comparison catalogue that documents how 12 AI coding agents actually implement their tools, for engineers choosing or building a coding-agent harness.
+
+## What it is
+
+A bilingual (English / 简体中文) Markdown catalogue, published as static pages, that answers a narrower question than the usual round-up: not *which features does this agent advertise* but *how is each tool actually built*. Five implementation dimensions — code search, code editing, persistent memory, sandboxing and credential isolation, sub-agents — each get a page that sorts the agents into mechanism levels, and each of the 12 agents gets a profile page with vendor, form factor, language, licence, pricing and tool implementation. The project's thesis is that these details set the ceiling of what a tool can do: an agent that shell-forks `rg` on every search cannot be as cheap per call as one with the engine in-process, and an agent that locates edits by plain string match cannot avoid whitespace mismatches, stale-file overwrites and ambiguous-match failures the way a hash-anchored editor can. Everything is dated: the catalogue reflects readings made up to 2026-08-28.
+
+## Install
+
+There is nothing to install. The pages are static and public:
+
+```
+https://alloevil.github.io/coding-agent-internals/
+```
+
+To read or extend the source Markdown:
+
+```bash
+git clone https://github.com/alloevil/coding-agent-internals.git
+cd coding-agent-internals
+```
+
+The repository is MIT licensed. The benchmark helpers are shell scripts with no build step:
+
+```bash
+cd benchmarks
+./edit-bench.sh
+```
+
+## Quickstart
+
+1. Open the landing page and read the terminal-CLI matrix: `https://alloevil.github.io/coding-agent-internals/`
+2. Pick the dimension you actually care about and read that page — for example editing: `https://alloevil.github.io/coding-agent-internals/dimensions/editing.html`
+3. Read the profile of the specific agent you are evaluating, e.g. `https://alloevil.github.io/coding-agent-internals/agents/claude-code.html`
+4. To contribute a correction, open a PR with source-code evidence for the changed cell; see `CONTRIBUTING.md`.
+
+## Verifiable claims
+
+This project measures nothing itself. It records implementation facts obtained by reading each agent's source code, docs and release notes, so every claim below is verified by reading a file — either a file in this repository, or the upstream source the repository points at. `benchmarks/README.md` contains tables labelled 预期结果 / *expected results*; those are hypotheses for the runnable scripts next to them, **not measurements**, and are not reproduced here. For the same reason this repository publishes no `claims.json`: it has no measured numbers of its own.
+
+| Claim | How it is verified | Evidence |
+|---|---|---|
+| Code search splits into three mechanism levels — shell fork to `rg`/`grep` (Claude Code, Hermes, Aider, OpenCode), IDE-native index (Cursor, Windsurf, Copilot), in-process engine (omp) | Read each agent's search tool implementation | `dimensions/search.md` |
+| Code editing splits into three levels — plain-text `str_replace` (most tools), diff + line numbers applied with `git apply` (Aider), hash-anchored plus AST-aware (omp) | Read each agent's edit tool implementation | `dimensions/editing.md` |
+| Plain-text `str_replace` has three recurring failure modes: whitespace mismatch, stale-file silent overwrite, and non-unique match hitting the wrong site | Enumerated from the mechanism, with runnable reproductions | `dimensions/editing.md`, `benchmarks/edit-bench.sh` |
+| Persistent memory splits into none (Claude Code, Codex, Aider, OpenCode), project-scoped session memory (omp Hindsight), cross-session semantic retrieval (Hermes via mem0) | Read each agent's memory subsystem | `dimensions/memory.md` |
+| Isolation splits into none (most local tools), cloud sandbox (Codex, Devin), and a unified credential chokepoint with audit log (Hermes Credential Guard) | Read each agent's sandbox/credential handling | `dimensions/security.md` |
+| Sub-agents split into four patterns: isolated worktree (omp, Claude Code Agent Teams), mixture-of-agents (Hermes), one cloud container per task with automatic PR (Codex), and task delegation with per-child model assignment (Hermes `delegate_task`) | Read each agent's sub-agent implementation | `dimensions/subagents.md` |
+| Of the eight terminal CLIs compared, only omp exposes a full LSP surface (13 operations) and a DAP debugger (27 operations) as agent tools; OpenCode has limited LSP and no DAP, and the remaining six have neither | Read the tool surface of each CLI | `README.md` comparison table, `agents/omp.md` |
+| SWE-bench figures in the matrix (Claude Code 88.6%, Codex 82.6%) are vendor-published numbers, not measurements by this project, and the other ten agents have no figure in the table | The table cells are marked as vendor figures; the remaining cells are `—` | `README.md` comparison table |
+
+## When to use it
+
+- You are choosing a coding agent and want to know why one fails at edits that another applies cleanly, rather than which one has more checkbox features.
+- You are building an agent harness and want a survey of the mechanisms in use — what "search" or "edit" can mean, and the trade-offs each choice locks in.
+- You need to explain to a team why an agent's ceiling is set by its tool layer.
+- You want per-agent pointers (vendor, licence, language, form factor, pricing tier) collected in one place with links onward.
+
+## When NOT to use it
+
+- **You want performance numbers.** There are none. `benchmarks/` ships runnable scripts and a methodology, but the tables there are explicitly *expected* results; nothing has been run and published. If you need latency or edit-success rates, run the scripts yourself.
+- **You want a ranking or a "best agent" verdict.** The catalogue sorts implementations into levels and states the trade-offs; it does not score agents overall or recommend one.
+- **You need current information about a fast-moving product.** Every entry is a dated reading (as of 2026-08-28). Agents ship weekly; assume any specific cell may already be stale and check the vendor's docs before making a decision on it.
+- **You need pricing you can budget against.** Price rows are indicative tiers as observed, not quotes, and several agents changed pricing during the period covered.
+- **You want coverage of non-coding agents,** research agents, or IDE autocomplete products in general. The scope is coding agents with a tool layer.
+
+## Compared to other agent comparisons
+
+The repository does not name a competing comparison site, so there is no head-to-head table to reproduce here; its stated positioning is the axis, not a rival. What it claims to do differently from the typical AI-coding-agent round-up is: (1) the unit of comparison is the implementation, not the advertised feature — "search" is broken into fork/index/in-process rather than checked as ✅; (2) claims are expected to carry source-code evidence, which is also the stated bar for accepting contributions; (3) failure modes are named and reproducible, e.g. the three ways plain-text replacement breaks, with a script in `benchmarks/`; and (4) entries are dated so staleness is visible rather than implied.
+
+The substantive comparison the repository *does* make is between the agents themselves. Across the eight terminal CLIs, the distribution is lopsided: seven of eight use plain-text or diff-based editing, one uses hash-anchored plus AST; seven of eight shell-fork `rg` or use a vendor built-in searcher, one runs ripgrep in-process; exactly one exposes a debugger at all; two have any persistent memory. The four IDE/platform entries (Cursor, Windsurf, Cline, Devin) trade tool-layer control for editor integration or full hosting.
+
+## FAQ
+
+**Which coding agents does this cover?**
+Twelve: Claude Code (Anthropic), Codex (OpenAI), omp / Oh My Pi (can1357), Hermes Agent (Nous Research), Aider (community), OpenCode (anomalyco), Gemini CLI (Google), GitHub Copilot CLI (GitHub/Microsoft), Cursor (Anysphere), Windsurf (Codeium), Cline (community) and Devin (Cognition). The first eight are terminal CLIs and appear in the main matrix; Cursor and Windsurf are VS Code-fork IDEs, Cline is a VS Code extension, and Devin is a standalone hosted platform, so they are covered in profiles and in the dimension pages rather than in the CLI matrix.
+
+**Does the project benchmark the agents?**
+No. It publishes no measured numbers of its own. The `benchmarks/` directory contains runnable search and edit test cases plus a methodology (same hardware, same repository commit, three runs taking the median, full logs, public scripts), and tables of *expected* results for those scripts. Those expected values are hypotheses written before running, and the repository is explicit about that. The only percentages anywhere in the catalogue are vendor-published SWE-bench figures for two agents, labelled as such.
+
+**How can hash-anchored editing be better than plain-text replacement?**
+Plain-text replacement locates the edit by matching a string the model reproduces from memory, so it fails when the model's indentation differs from the file's, silently overwrites when the file changed after the model read it, and can hit the wrong occurrence when the string is not unique. Hash-anchored editing identifies the target by a content hash the tool itself issued, so a stale or ambiguous anchor is rejected rather than mis-applied, and AST awareness lets the tool address a whole syntactic construct instead of a text span. The trade-off is complexity in the tool layer and a tool-specific format the model must be trained or prompted into.
+
+**How current is this, and what happens when an agent changes?**
+The catalogue is a dated reading, currently as of 2026-08-28, and the repository's contribution rule is that corrections come with source-code evidence and stale entries get fixed rather than accumulated. Treat any single cell as "true when read", not as a property of the product. For a decision that hinges on one cell — say whether a given CLI exposes a debugger — verify against the vendor's current docs.
+
+**Is it usable commercially, and how do I cite it?**
+The repository is MIT licensed, so yes. Cite the specific page rather than the site root, because the dimension and agent pages are the units that carry the claim: for example `https://alloevil.github.io/coding-agent-internals/dimensions/editing.html` for the editing levels, or `https://alloevil.github.io/coding-agent-internals/agents/omp.html` for a single agent's tool surface.
+
+## Source
+
+- Site: https://alloevil.github.io/coding-agent-internals/
+- Repository: https://github.com/alloevil/coding-agent-internals
+- Licence: MIT

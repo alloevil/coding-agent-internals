@@ -1,16 +1,20 @@
 <p align="center">
   <h1 align="center">🔍 Coding Agent Internals</h1>
   <p align="center"><strong>2026 Deep Comparison / 工具实现深度对比</strong></p>
-  <p align="center">
-    <img src="https://img.shields.io/badge/Agents-12-blue?style=flat-square" alt="12 Agents">
-    <img src="https://img.shields.io/badge/Dimensions-5-green?style=flat-square" alt="5 Dimensions">
-    <img src="https://img.shields.io/badge/Year-2026-purple?style=flat-square" alt="2026">
-    <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License">
-    <img src="https://img.shields.io/badge/Last%20Updated-Aug%2028-orange?style=flat-square" alt="Last Updated">
-  </p>
-  <p align="center">
-    <a href="#english">🇺🇸 English</a> · <a href="#中文">🇨🇳 中文</a>
-  </p>
+</p>
+
+**Coding Agent Internals** is a source-code-level comparison catalogue that documents how 12 AI coding agents actually implement their tools — code search, code editing, persistent memory, isolation and sub-agents — for engineers choosing or building a coding-agent harness.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Agents-12-blue?style=flat-square" alt="12 Agents">
+  <img src="https://img.shields.io/badge/Dimensions-5-green?style=flat-square" alt="5 Dimensions">
+  <img src="https://img.shields.io/badge/Year-2026-purple?style=flat-square" alt="2026">
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License">
+  <img src="https://img.shields.io/badge/Last%20Updated-Aug%2028-orange?style=flat-square" alt="Last Updated">
+</p>
+
+<p align="center">
+  <a href="#english">🇺🇸 English</a> · <a href="#中文">🇨🇳 中文</a>
 </p>
 
 ---
@@ -19,6 +23,34 @@
 > **ZH**: 不是功能列表搬运，而是**工具实现层面**的横向对比。
 
 ---
+
+## What it is
+
+Five implementation dimensions — code search, code editing, persistent memory, sandboxing / credential isolation, sub-agents — each get a page that sorts the 12 agents into mechanism levels, and each agent gets a profile page with vendor, form factor, language, licence, pricing and tool implementation. The thesis: these details set the **ceiling** of what a tool can do, so they are worth more than a feature checkbox. Every entry is a dated reading of that agent's source and docs (currently as of 2026-08-28) — agents ship weekly, so treat any single cell as "true when read", not as a permanent property.
+
+这个项目把对比的单位从"宣传的功能"换成"实现方式"：搜索是 fork `rg` 还是进程内引擎、编辑是纯文本替换还是 hash 锚定、有没有持久记忆和凭证隔离。五个维度页 + 12 份 agent 档案，均为带日期的源码级阅读结论（当前截至 2026-08-28）。
+
+## Install
+
+Nothing to install — the catalogue is static pages:
+
+```
+https://alloevil.github.io/coding-agent-internals/
+```
+
+To read or extend the source Markdown:
+
+```bash
+git clone https://github.com/alloevil/coding-agent-internals.git
+cd coding-agent-internals
+```
+
+The benchmark helpers are plain shell scripts with no build step:
+
+```bash
+cd benchmarks
+./edit-bench.sh
+```
 
 ## 🇺🇸 English
 
@@ -230,6 +262,39 @@ Level 3: hash 锚定 + AST      ← omp（消除 whitespace 战争和 stale file
 | 🧠 持久记忆 | [dimensions/memory.md](dimensions/memory.md) | mem0 vs 无 vs 上下文压缩？ |
 | 🔒 安全隔离 | [dimensions/security.md](dimensions/security.md) | 凭证隔离 vs 沙箱 vs 无？ |
 | 🤖 子代理 | [dimensions/subagents.md](dimensions/subagents.md) | worktree vs MOA vs 云端沙箱？ |
+
+---
+
+## When to use it
+
+- You are choosing a coding agent and want to know **why** one fails at edits another applies cleanly, rather than which one has more checkboxes.
+- You are building an agent harness and want a survey of the mechanisms in use, and the trade-offs each choice locks in.
+- You need per-agent facts (vendor, licence, language, form factor, pricing tier) collected in one place with links onward.
+
+## When NOT to use it
+
+- **You want performance numbers.** There are none. `benchmarks/` ships runnable scripts and a methodology, but its result tables are labelled *expected* (预期结果) — hypotheses, not measurements. Nothing has been run and published, and for that reason this repo publishes no `claims.json`.
+- **You want a ranking or a "best agent" verdict.** The catalogue sorts implementations into levels and names the trade-offs; it does not score agents overall.
+- **You need guaranteed-current information.** Every entry is a dated reading (as of 2026-08-28). Agents ship weekly — verify any cell your decision actually hinges on against the vendor's current docs.
+- **You need pricing you can budget against.** Price rows are indicative tiers as observed, not quotes.
+- **You want coverage of non-coding agents** or general IDE autocomplete products. Scope is coding agents with a tool layer.
+
+## FAQ
+
+**Which agents are covered?**
+Twelve: Claude Code (Anthropic), Codex (OpenAI), omp / Oh My Pi (can1357), Hermes Agent (Nous Research), Aider (community), OpenCode (anomalyco), Gemini CLI (Google), GitHub Copilot CLI (GitHub/Microsoft), Cursor (Anysphere), Windsurf (Codeium), Cline (community), Devin (Cognition). The first eight are terminal CLIs and appear in the main matrix; the other four are IDEs, an editor extension and a hosted platform, so they appear in the profiles and dimension pages instead.
+
+**Does this project benchmark the agents?**
+No. It publishes no measured numbers of its own. `benchmarks/` contains runnable search and edit test cases plus controls (same hardware, same repo commit, three runs taking the median, public scripts) and tables of *expected* results for them. The only percentages in the catalogue are vendor-published SWE-bench figures for two agents, labelled as such.
+
+**Why does hash-anchored editing beat plain-text replacement?**
+Plain-text replacement locates the edit by a string the model reproduces from memory, so it fails on indentation mismatch, silently overwrites when the file changed after the model read it, and can hit the wrong occurrence when the string is not unique. A hash anchor is issued by the tool, so a stale or ambiguous anchor is rejected instead of mis-applied; AST awareness lets the tool address a whole construct instead of a text span. The cost is complexity in the tool layer and a format the model must be prompted or trained into.
+
+**How do I cite a finding?**
+Cite the specific page, not the site root — the dimension and agent pages are the units that carry the claim, e.g. `https://alloevil.github.io/coding-agent-internals/dimensions/editing.html` or `https://alloevil.github.io/coding-agent-internals/agents/omp.html`. The repository is MIT licensed.
+
+**How do I correct something?**
+Open a PR with source-code evidence for the changed cell (see `CONTRIBUTING.md`). Stale entries are corrected rather than accumulated, and the "Last Updated" badge plus the as-of date move with them.
 
 ---
 

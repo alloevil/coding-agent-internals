@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Every page here resolves at BOTH extensions: Jekyll renders each .md into
+       a themed .html (self-referential rel=canonical, verified live) and also
+       serves the raw .md as text/markdown. The .html is listed as canonical; the
+       .md is deliberately left crawlable as an LLM-readable surface and must not
+       be Disallowed, and must not be added here as a duplicate entry. -->
+  <url><loc>https://alloevil.github.io/coding-agent-internals/</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/dimensions/search.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/dimensions/editing.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/dimensions/memory.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/dimensions/security.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/dimensions/subagents.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/claude-code.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/codex.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/omp.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/hermes.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/aider.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/opencode.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/gemini-cli.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/copilot-cli.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/cursor.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/windsurf.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/cline.html</loc></url>
+  <url><loc>https://alloevil.github.io/coding-agent-internals/agents/devin.html</loc></url>
+</urlset>

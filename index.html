@@ -17,11 +17,40 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "Coding Agent Internals — 2026 Deep Comparison of 12 AI Coding Agents",
-    "description": "Deep comparison of 12 AI coding agents focusing on tool implementation, not feature checklists.",
+    "@type": "Dataset",
+    "name": "Coding Agent Internals — 2026 Deep Comparison of 12 AI Coding Agents",
+    "alternateName": "coding-agent-internals",
+    "description": "Source-code-level comparison of how 12 AI coding agents implement code search, code editing, persistent memory, sandboxing and credential isolation, and sub-agents. Bilingual (English / 简体中文) catalogue of implementation mechanisms rather than feature checklists.",
     "url": "https://alloevil.github.io/coding-agent-internals/",
-    "author": {"@type": "Person", "name": "alloevil", "url": "https://github.com/alloevil"}
+    "sameAs": "https://github.com/alloevil/coding-agent-internals",
+    "license": "https://opensource.org/licenses/MIT",
+    "isAccessibleForFree": true,
+    "inLanguage": ["en", "zh-CN"],
+    "dateModified": "2026-08-28",
+    "keywords": ["AI coding agent", "coding agent comparison", "agent tool implementation", "code search implementation", "hash-anchored editing", "LSP", "DAP", "sub-agents", "agent memory"],
+    "creator": {"@type": "Person", "name": "alloevil", "url": "https://github.com/alloevil"},
+    "measurementTechnique": "Reading each agent's published source code, official documentation and release notes",
+    "variableMeasured": [
+      {"@type": "PropertyValue", "name": "Code search implementation", "description": "Shell fork to rg/grep, IDE-native index, or in-process engine"},
+      {"@type": "PropertyValue", "name": "Code editing implementation", "description": "Plain-text str_replace, diff plus line numbers, or hash-anchored with AST awareness"},
+      {"@type": "PropertyValue", "name": "Persistent memory", "description": "None, project-scoped session memory, or cross-session semantic retrieval"},
+      {"@type": "PropertyValue", "name": "Sandboxing and credential isolation", "description": "None, cloud sandbox, or unified credential chokepoint with audit log"},
+      {"@type": "PropertyValue", "name": "Sub-agents", "description": "Isolated worktree, mixture-of-agents, cloud sandbox parallelism, or task delegation"}
+    ],
+    "about": [
+      {"@type": "SoftwareApplication", "name": "Claude Code"},
+      {"@type": "SoftwareApplication", "name": "Codex"},
+      {"@type": "SoftwareApplication", "name": "omp (Oh My Pi)"},
+      {"@type": "SoftwareApplication", "name": "Hermes Agent"},
+      {"@type": "SoftwareApplication", "name": "Aider"},
+      {"@type": "SoftwareApplication", "name": "OpenCode"},
+      {"@type": "SoftwareApplication", "name": "Gemini CLI"},
+      {"@type": "SoftwareApplication", "name": "GitHub Copilot CLI"},
+      {"@type": "SoftwareApplication", "name": "Cursor"},
+      {"@type": "SoftwareApplication", "name": "Windsurf"},
+      {"@type": "SoftwareApplication", "name": "Cline"},
+      {"@type": "SoftwareApplication", "name": "Devin"}
+    ]
   }
   </script>
   <style>
