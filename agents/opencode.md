@@ -8,7 +8,7 @@
 |----|---|
 | 出品方 | anomalyco |
 | GitHub | [anomalyco/opencode](https://github.com/anomalyco/opencode) |
-| 语言 | Go |
+| 语言 | TypeScript（核心，Bun） |
 | 协议 | MIT |
 | 模型 | 75+ 提供商（含 Ollama 本地模型） |
 | 价格 | 免费（BYO API Key） |

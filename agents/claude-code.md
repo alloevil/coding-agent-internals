@@ -9,11 +9,11 @@
 | 出品方 | Anthropic |
 | 形态 | 终端 CLI |
 | 模型 | 仅 Claude 系列 |
-| 上下文 | 200K（Opus 4.8） |
+| 上下文 | 1M（Opus 4.8） |
 | 开源 | ❌ |
-| SWE-bench | 88.6%（Opus 4.8，2026-05） |
+| SWE-bench | 88.6% SWE-bench Verified（Opus 4.8，2026-05-28）——[System Card](https://www.anthropic.com/claude-opus-4-8-system-card) §8.2 |
 | 价格 | $20/月 Pro → $100/月 Max 5x → $200/月 Max 20x |
-| 首次发布 | 2025 年底 |
+| 首次发布 | 2025-02-24（limited research preview）→ 2025-05-22 GA；来源：[Claude 3.7 Sonnet](https://www.anthropic.com/news/claude-3-7-sonnet)、[Claude 4](https://www.anthropic.com/news/claude-4) |
 
 ## 设计哲学
 
@@ -24,7 +24,7 @@
 ## 核心能力
 
 ### Dynamic Workflows
-单会话里并行跑数百个 subagent。200K 上下文 + 动态工作流让它能处理大规模重构。
+单会话里并行跑数百个 subagent。1M 上下文 + 动态工作流让它能处理大规模重构。
 
 ### Agent Teams
 多个子代理并行工作，每个在独立上下文中。
@@ -46,7 +46,7 @@ Playwright 集成，支持 web 测试和文档查阅。
 | 编辑 | 纯文本替换 | Level 1 |
 | LSP | ❌ | — |
 | DAP | ❌ | — |
-| 记忆 | ❌（靠 200K 上下文硬撑） | — |
+| 记忆 | ❌（靠 1M 上下文硬撑） | — |
 | 凭证 | 无隔离 | Level 1 |
 | 浏览器 | Playwright | — |
 | 子代理 | Agent Teams | 隔离上下文 |
@@ -68,8 +68,8 @@ Playwright 集成，支持 web 测试和文档查阅。
 
 ## 优势
 
-- SWE-bench 最高分（88.6%）
-- 深度理解能力最强（200K 上下文）
+- SWE-bench Verified 88.6%（Opus 4.8，Anthropic 系统卡）
+- 深度理解能力最强（1M 上下文）
 - 本地执行可实时调整
 - Dynamic Workflows 支持复杂任务
 

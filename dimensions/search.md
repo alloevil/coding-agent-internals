@@ -35,8 +35,10 @@ IDE 内置的搜索能力，通常基于自身索引系统。
 
 | Agent | 实现方式 | 代码量 |
 |-------|---------|--------|
-| omp | Rust 内嵌 ripgrep（grep 模块） | ~1,900 行 Rust |
-| omp | Rust 内嵌 brush shell（shell 模块） | ~3,700 行 Rust |
+| omp | Rust 内嵌 ripgrep（`pi-natives` 的 grep 模块） | 3,280 行 Rust |
+| omp | Rust 内嵌 brush shell（`pi-shell` crate） | 38,000 行 Rust |
+
+行数取自上游 README 的 crate / module 表（2026-09-12 读取）：<https://github.com/can1357/oh-my-pi#readme>
 
 **优点**：无 fork/exec 开销；输出直接是内存中的结构化数据；跨平台无需外部依赖
 **缺点**：实现复杂，需要维护 Rust 代码

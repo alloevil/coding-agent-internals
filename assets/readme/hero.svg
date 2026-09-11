@@ -16,7 +16,7 @@
 
   <!-- title block -->
   <g id="title-block">
-    <text x="56" y="46" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">12 AGENTS · 5 DIMENSIONS · SOURCE-LEVEL · AS OF 2026-08-28</text>
+    <text x="56" y="46" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">12 AGENTS · 5 DIMENSIONS · SOURCE-LEVEL · AS OF 2026-09-12</text>
     <text x="1144" y="46" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">alloevil/coding-agent-internals</text>
     <text x="56" y="94" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="48" font-weight="700" fill="#f0f6fc">Coding Agent Internals</text>
     <text x="56" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="20" fill="#c9d1d9">How 12 coding agents actually implement their tools — the details that set the ceiling.</text>

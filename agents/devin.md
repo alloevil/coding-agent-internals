@@ -9,7 +9,7 @@
 | 出品方 | Cognition |
 | 形态 | 独立平台（浏览器 + 终端 + 编辑器一体） |
 | 开源 | ❌ |
-| 价格 | $500/月 |
+| 价格 | Free / Pro $20/月 / Max $200/月 / Teams（按量计费，最低 $80/月）/ Enterprise 定制——[Cognition 2026-04-14 公告](https://cognition.com/blog/new-self-serve-plans-for-devin) |
 
 ## 设计哲学
 
@@ -40,7 +40,7 @@
 
 ## 劣势
 
-- 价格最贵（$500/月）
+- 成本不透明：2026-04 起改为 Free / Pro $20 / Max $200 / Teams（最低 $80/月，按量计费）
 - 闭源不可审计
 - 依赖 Cognition 云端服务
 - 不适合实时交互（异步执行）

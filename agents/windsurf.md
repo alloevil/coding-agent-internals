@@ -1,12 +1,12 @@
 # Windsurf
 
-> Codeium 出品的 AI IDE
+> Cognition 出品的 AI IDE（原 Codeium；Cognition 于 2025-07 达成收购协议，2026-06 起并入 Devin Desktop）
 
 ## 基本信息
 
 | 项 | 值 |
 |----|---|
-| 出品方 | Codeium |
+| 出品方 | Cognition（原 Codeium）——[Cognition 收购公告](https://cognition.com/blog/windsurf)、[一年回顾](https://cognition.com/blog/one-year-of-building-together) |
 | 形态 | VS Code Fork IDE |
 | 模型 | 多模型 |
 | 开源 | ❌ |

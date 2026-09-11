@@ -29,7 +29,7 @@
 1. 多个 specialist advisor 分析同一问题
 2. 每个 advisor 可分配不同模型（便宜模型做分类，贵模型做推理）
 3. 聚合器综合所有建议为最终答案
-4. 配合 prompt caching，速度提升 4x
+4. 文档明确：MoA 不破坏主会话 prompt cache，代价是每次迭代多出参考模型调用；官方 HermesBench 数据（厂商自报）：两模型预设 0.8202 vs 单跑 opus-4.8 0.7607
 
 ### 模式 C: 云端沙箱并行
 

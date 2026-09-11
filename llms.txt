@@ -2,31 +2,31 @@
 
 > Coding Agent Internals is a source-code-level comparison catalogue that documents how 12 AI coding agents actually implement their tools, for engineers choosing or building a coding-agent harness.
 
-Most AI coding agent comparisons are feature checklists. This one reads the implementations and records the mechanism instead: whether code search shell-forks `rg` or runs an in-process engine, whether editing is plain-text `str_replace`, diff-plus-line-numbers, or hash-anchored with AST awareness, and whether persistent memory, credential isolation and sub-agents exist at all. Content is bilingual Markdown (English + 简体中文) in the repository, published as static pages — there is nothing to install; read the pages below or `git clone https://github.com/alloevil/coding-agent-internals.git`. Observations are dated 2026-08-28: agent internals change with every release, so treat every cell as a dated reading of that agent's source and docs, not a permanent property.
+Most AI coding agent comparisons are feature checklists. This one reads the implementations and records the mechanism instead: whether code search shell-forks `rg` or runs an in-process engine, whether editing is plain-text `str_replace`, SEARCH/REPLACE diff blocks, or hash-anchored with AST awareness, and whether persistent memory, credential isolation and sub-agents exist at all. Content is bilingual Markdown (English + 简体中文) in the repository, published as static pages — there is nothing to install; read the pages below or `git clone https://github.com/alloevil/coding-agent-internals.git`. Observations are dated 2026-09-12: agent internals change with every release, so treat every cell as a dated reading of that agent's source and docs, not a permanent property.
 
 ## Docs
 - [Code search — implementation comparison](https://alloevil.github.io/coding-agent-internals/dimensions/search.html): three levels — shell fork to `rg`/`grep`, IDE-native index, in-process engine
-- [Code editing — implementation comparison](https://alloevil.github.io/coding-agent-internals/dimensions/editing.html): plain-text `str_replace` and its three failure modes, diff+line-number, hash-anchored + AST
-- [Persistent memory — implementation comparison](https://alloevil.github.io/coding-agent-internals/dimensions/memory.html): no memory, project-scoped session memory, cross-session semantic retrieval
-- [Sandboxing and credential isolation — implementation comparison](https://alloevil.github.io/coding-agent-internals/dimensions/security.html): no isolation, cloud sandbox, credential chokepoint with audit log
+- [Code editing — implementation comparison](https://alloevil.github.io/coding-agent-internals/dimensions/editing.html): plain-text `str_replace` and its three failure modes, SEARCH/REPLACE diff blocks, hash-anchored + AST
+- [Persistent memory — implementation comparison](https://alloevil.github.io/coding-agent-internals/dimensions/memory.html): no memory, project-scoped session memory, built-in memory files plus optional external providers
+- [Sandboxing and credential isolation — implementation comparison](https://alloevil.github.io/coding-agent-internals/dimensions/security.html): no isolation, cloud sandbox, command approval with MCP credential filtering
 - [Sub-agents — implementation comparison](https://alloevil.github.io/coding-agent-internals/dimensions/subagents.html): four patterns — isolated worktree, mixture-of-agents, cloud sandbox parallelism, task delegation
 
 ## Agent profiles
 - [Claude Code](https://alloevil.github.io/coding-agent-internals/agents/claude-code.html): Anthropic, TypeScript, `rg` shell fork, plain-text edits, Agent Teams sub-agents
 - [Codex](https://alloevil.github.io/coding-agent-internals/agents/codex.html): OpenAI, TypeScript, built-in search, cloud sandbox per task with automatic PR
 - [omp (Oh My Pi)](https://alloevil.github.io/coding-agent-internals/agents/omp.html): can1357, Rust + TypeScript, in-process ripgrep, hash-anchored + AST edits, LSP and DAP wired in
-- [Hermes Agent](https://alloevil.github.io/coding-agent-internals/agents/hermes.html): Nous Research, TypeScript, mixture-of-agents, mem0 semantic memory, Credential Guard
-- [Aider](https://alloevil.github.io/coding-agent-internals/agents/aider.html): community, Python, diff + line-number edits applied with `git apply`
-- [OpenCode](https://alloevil.github.io/coding-agent-internals/agents/opencode.html): anomalyco, Go, `rg` shell fork, plain-text edits, limited sub-agents
+- [Hermes Agent](https://alloevil.github.io/coding-agent-internals/agents/hermes.html): Nous Research, Python, mixture-of-agents, built-in MEMORY.md/USER.md plus 8 optional external memory providers, command approval and MCP credential filtering
+- [Aider](https://alloevil.github.io/coding-agent-internals/agents/aider.html): community, Python, SEARCH/REPLACE diff blocks (plus optional unified-diff) applied by Aider's own patcher
+- [OpenCode](https://alloevil.github.io/coding-agent-internals/agents/opencode.html): anomalyco, TypeScript, `rg` shell fork, plain-text edits, limited sub-agents
 - [Gemini CLI](https://alloevil.github.io/coding-agent-internals/agents/gemini-cli.html): Google, TypeScript, built-in search, Gemini-only
 - [GitHub Copilot CLI](https://alloevil.github.io/coding-agent-internals/agents/copilot-cli.html): GitHub/Microsoft, built-in search, Background Agent
 - [Cursor](https://alloevil.github.io/coding-agent-internals/agents/cursor.html): Anysphere, VS Code fork IDE, IDE-native search and VS Code editing APIs
-- [Windsurf](https://alloevil.github.io/coding-agent-internals/agents/windsurf.html): Codeium, VS Code fork IDE, IDE-native search, Cascade multi-file reasoning
+- [Windsurf](https://alloevil.github.io/coding-agent-internals/agents/windsurf.html): Cognition (formerly Codeium), VS Code fork IDE, IDE-native search, Cascade multi-file reasoning
 - [Cline](https://alloevil.github.io/coding-agent-internals/agents/cline.html): community, VS Code extension, bring-your-own-key multi-model, MCP support
 - [Devin](https://alloevil.github.io/coding-agent-internals/agents/devin.html): Cognition, standalone platform, one isolated cloud container per task with automatic PR
 
 ## Method
-- [Repository README (bilingual, full comparison tables)](https://alloevil.github.io/coding-agent-internals/): the terminal-CLI matrix, one row each for vendor, language, open-source status, model lock-in, search, edit, LSP, DAP, sub-agents, persistent memory, cron, credential guard, browser, MCP, context window, vendor-published SWE-bench score, and price
+- [Repository README (bilingual, full comparison tables)](https://alloevil.github.io/coding-agent-internals/): the terminal-CLI matrix, one row each for vendor, language, open-source status, model lock-in, search, edit, LSP, DAP, sub-agents, persistent memory, cron, credential isolation, browser, MCP, context window, vendor-published benchmark score, and price
 - [Benchmark scripts and methodology](https://github.com/alloevil/coding-agent-internals/tree/main/benchmarks): runnable search/edit test cases and the controls used. The result tables there are labelled **expected** outcomes, not measurements — this repository publishes no benchmark numbers of its own.
 - [Contribution rules](https://github.com/alloevil/coding-agent-internals/blob/main/CONTRIBUTING.md): implementation details are accepted with source-code evidence
 

@@ -19,16 +19,18 @@ Agent 用字符串匹配定位目标代码，执行 `str_replace`。
 - **Stale file**：文件已被修改，模型基于旧内容替换，静默覆盖新内容
 - **字符串不唯一**：目标代码在文件中出现多次，匹配到错误位置
 
-### Level 2: Diff + 行号定位
+### Level 2: Diff（search/replace 块）
 
-Agent 生成 diff patch，用行号定位插入/替换位置。
+Agent 生成 diff 形式的编辑块，由工具自己的 patcher 应用。
 
 | Agent | 实现方式 |
 |-------|---------|
-| Aider | 生成 diff，git apply |
+| Aider | SEARCH/REPLACE 块（另有可选 unified diff，`--edit-format udiff`）；Aider 自己应用编辑，不使用 `git apply` |
 
-**优点**：比纯文本替换更精确，支持多处同时修改
-**缺点**：行号在文件变化后会漂移；仍受 whitespace 问题困扰
+**优点**：只输出改动部分，比整文件重写省 token，且能一次改多处
+**缺点**：锚点文本仍需精确匹配，缩进不一致时会失败
+
+来源：<https://aider.chat/docs/more/edit-formats.html>
 
 ### Level 3: Hash 锚定 + AST 感知
 
@@ -42,7 +44,7 @@ Agent 生成 diff patch，用行号定位插入/替换位置。
 1. 读取文件时，为每行生成内容 hash
 2. 编辑时，模型引用 hash 而非行号或文本
 3. 如果文件已被修改（hash 不匹配），拒绝执行 patch，防止覆盖
-4. Grok 4 Fast 实测：hash 锚定比传统 diff 节省 61% 输出 token
+4. omp 上游 README 自报数据：Grok 4 Fast 输出 token −61%（厂商数据，非本仓库实测）——<https://github.com/can1357/oh-my-pi#readme>
 
 **AST 感知编辑**：
 - 理解代码结构（函数、类、块），不只做文本替换
@@ -51,7 +53,7 @@ Agent 生成 diff patch，用行号定位插入/替换位置。
 
 ## 对比总结
 
-| 维度 | 纯文本替换 | Diff+行号 | Hash+AST |
+| 维度 | 纯文本替换 | Diff（search/replace） | Hash+AST |
 |------|-----------|----------|---------|
 | 精确度 | 低 | 中 | 高 |
 | whitespace 问题 | 严重 | 中等 | 无 |

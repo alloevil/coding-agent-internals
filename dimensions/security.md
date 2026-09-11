@@ -26,19 +26,21 @@ Agent 在隔离的云端容器中执行，与本地环境分离。
 **优点**：本地凭证不暴露给 Agent；执行环境可销毁重建
 **缺点**：依赖云端服务；无法访问本地资源
 
-### Level 3: 凭证卫士（Credential Guard）
+### Level 3: 审批 + 凭证过滤（Hermes 的 8 层模型）
 
-统一管控所有凭证访问，验证调用者 + 检查授权 + 记录日志。
+Hermes 文档描述的是一套 **8 层**防御模型，而不是统一的"凭证关卡"：危险命令需要审批，MCP 子进程有环境变量隔离，容器后端提供隔离执行环境。文档中**没有**名为 "Credential Guard" 的统一凭证关卡，也没有凭证访问审计日志。
 
 | Agent | 实现方式 |
 |-------|---------|
-| Hermes | Credential Guard 系统 |
+| Hermes | 8 层：用户授权、危险命令审批、文件写入安全、容器隔离、MCP 凭证过滤（环境变量隔离）、上下文文件扫描、跨会话隔离、输入净化 |
 
-**Hermes Credential Guard**：
-- 所有凭证访问走统一关卡
-- 子代理只能拿到最小权限（principle of least privilege）
-- 每次访问记录审计日志（谁、什么时候、访问了什么）
-- 本地工具看不到云端凭证，反之亦然
+**已文档化的机制**：
+- 危险命令审批：`approvals.mode` 为 smart（默认，用小模型评估风险）/ manual / off；审批超时默认拒绝
+- MCP 凭证过滤：对 MCP 子进程做环境变量隔离
+- 容器隔离：Docker / Singularity / Modal / Daytona / Vercel Sandbox；容器内跳过危险命令检查，因为容器本身即边界
+- 跨会话隔离，以及终端后端工作目录参数的 allowlist 校验
+
+来源：<https://hermes-agent.nousresearch.com/docs/user-guide/security>
 
 ## 安全事件记录
 

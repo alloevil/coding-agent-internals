@@ -9,9 +9,9 @@
 | 出品方 | OpenAI |
 | 形态 | CLI + Desktop App + Web/Cloud |
 | 模型 | 仅 GPT 系列 |
-| 上下文 | 1M（GPT-5.5） |
+| 上下文 | 400K（Codex；API 为 1M）——[OpenAI GPT‑5.5](https://openai.com/index/introducing-gpt-5-5/) |
 | 开源 | CLI 是 |
-| SWE-bench | 82.6%（2026-04） |
+| Terminal-Bench 2.0 | 82.7%（2026-04-23，[OpenAI GPT‑5.5](https://openai.com/index/introducing-gpt-5-5/)；OpenAI 未在该文公布 SWE-bench Verified） |
 | 价格 | $20/月 ChatGPT Plus → $200/月 Pro；API 按 token 计费（GPT-5.5 输出 $30/M token） |
 
 ## 设计哲学
@@ -46,7 +46,7 @@ CLI + Desktop App + Web/Cloud。
 ## 优势
 
 - 并行委派最强（云端沙箱同时跑多个任务）
-- 1M 上下文（GPT-5.5）
+- 400K 上下文（Codex 内；API 1M）
 - 自动 PR 工作流最成熟
 - 云端沙箱天然安全隔离
 

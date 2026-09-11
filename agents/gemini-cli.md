@@ -8,7 +8,7 @@
 |----|---|
 | 出品方 | Google |
 | GitHub | [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) |
-| Stars | 97K+ |
+| Stars | 107K（106,920，2026-09-12 GitHub API） |
 | 形态 | 终端 CLI |
 | 模型 | 仅 Gemini 系列（Gemini 3） |
 | 开源 | ✅ |

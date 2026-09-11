@@ -26,15 +26,15 @@
     "license": "https://opensource.org/licenses/MIT",
     "isAccessibleForFree": true,
     "inLanguage": ["en", "zh-CN"],
-    "dateModified": "2026-08-28",
+    "dateModified": "2026-09-12",
     "keywords": ["AI coding agent", "coding agent comparison", "agent tool implementation", "code search implementation", "hash-anchored editing", "LSP", "DAP", "sub-agents", "agent memory"],
     "creator": {"@type": "Person", "name": "alloevil", "url": "https://github.com/alloevil"},
     "measurementTechnique": "Reading each agent's published source code, official documentation and release notes",
     "variableMeasured": [
       {"@type": "PropertyValue", "name": "Code search implementation", "description": "Shell fork to rg/grep, IDE-native index, or in-process engine"},
-      {"@type": "PropertyValue", "name": "Code editing implementation", "description": "Plain-text str_replace, diff plus line numbers, or hash-anchored with AST awareness"},
-      {"@type": "PropertyValue", "name": "Persistent memory", "description": "None, project-scoped session memory, or cross-session semantic retrieval"},
-      {"@type": "PropertyValue", "name": "Sandboxing and credential isolation", "description": "None, cloud sandbox, or unified credential chokepoint with audit log"},
+      {"@type": "PropertyValue", "name": "Code editing implementation", "description": "Plain-text str_replace, SEARCH/REPLACE diff blocks, or hash-anchored with AST awareness"},
+      {"@type": "PropertyValue", "name": "Persistent memory", "description": "None, project-scoped session memory, or built-in memory files plus optional external providers"},
+      {"@type": "PropertyValue", "name": "Sandboxing and credential isolation", "description": "None, cloud sandbox, or command approval with MCP credential filtering and container isolation"},
       {"@type": "PropertyValue", "name": "Sub-agents", "description": "Isolated worktree, mixture-of-agents, cloud sandbox parallelism, or task delegation"}
     ],
     "about": [
@@ -132,9 +132,9 @@
         </tr>
         <tr><td>Claude Code</td><td>rg shell</td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td>❌</td><td>$20-200/mo</td></tr>
         <tr><td>Codex</td><td><span class="en">built-in</span><span class="zh">内置</span></td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td>❌</td><td>$20-200/mo</td></tr>
-        <tr><td><strong>omp</strong></td><td class="highlight"><span class="en">in-process ripgrep</span><span class="zh">内嵌 ripgrep</span></td><td class="highlight"><span class="en">hash-anchored + AST</span><span class="zh">Hash 锚定 + AST</span></td><td class="highlight">✅ 13 ops</td><td class="highlight">Hindsight</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
-        <tr><td><strong>Hermes</strong></td><td>rg shell</td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td class="highlight">mem0</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
-        <tr><td>Aider</td><td>rg shell</td><td>diff+line</td><td>❌</td><td>❌</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
+        <tr><td><strong>omp</strong></td><td class="highlight"><span class="en">in-process ripgrep</span><span class="zh">内嵌 ripgrep</span></td><td class="highlight"><span class="en">hash-anchored + AST</span><span class="zh">Hash 锚定 + AST</span></td><td class="highlight">✅ 14 ops</td><td class="highlight">Hindsight</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
+        <tr><td><strong>Hermes</strong></td><td>rg shell</td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td class="highlight"><span class="en">built-in + 8 providers</span><span class="zh">内置 + 8 提供方</span></td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
+        <tr><td>Aider</td><td>rg shell</td><td>diff (search/replace)</td><td>❌</td><td>❌</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
         <tr><td>OpenCode</td><td>rg shell</td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td><span class="en">limited</span><span class="zh">有限</span></td><td>❌</td><td><span class="en">free BYO</span><span class="zh">免费 BYO</span></td></tr>
         <tr><td>Gemini CLI</td><td><span class="en">built-in</span><span class="zh">内置</span></td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td>❌</td><td><span class="en">free tier</span><span class="zh">免费额度</span></td></tr>
         <tr><td>Copilot CLI</td><td><span class="en">built-in</span><span class="zh">内置</span></td><td><span class="en">plain text</span><span class="zh">纯文本</span></td><td>❌</td><td>❌</td><td>$10/mo</td></tr>
@@ -146,8 +146,8 @@
       <div class="agent-grid">
         <div class="agent-card"><h3>Claude Code</h3><span class="type"><span class="en">Terminal CLI · Anthropic</span><span class="zh">终端 CLI · Anthropic</span></span></div>
         <div class="agent-card"><h3>Codex</h3><span class="type"><span class="en">CLI + Cloud · OpenAI</span><span class="zh">CLI + 云端 · OpenAI</span></span></div>
-        <div class="agent-card"><h3>omp</h3><span class="type"><span class="en">Terminal CLI · 28K ⭐</span><span class="zh">终端 CLI · 28K ⭐</span></span></div>
-        <div class="agent-card"><h3>Hermes Agent</h3><span class="type"><span class="en">Terminal CLI · 237K ⭐</span><span class="zh">终端 CLI · 237K ⭐</span></span></div>
+        <div class="agent-card"><h3>omp</h3><span class="type"><span class="en">Terminal CLI · 30.7K ⭐</span><span class="zh">终端 CLI · 30.7K ⭐</span></span></div>
+        <div class="agent-card"><h3>Hermes Agent</h3><span class="type"><span class="en">Terminal CLI · 244.5K ⭐</span><span class="zh">终端 CLI · 244.5K ⭐</span></span></div>
         <div class="agent-card"><h3>Aider</h3><span class="type"><span class="en">Terminal CLI</span><span class="zh">终端 CLI</span></span></div>
         <div class="agent-card"><h3>OpenCode</h3><span class="type"><span class="en">Terminal CLI</span><span class="zh">终端 CLI</span></span></div>
         <div class="agent-card"><h3>Gemini CLI</h3><span class="type"><span class="en">Terminal CLI · 107K ⭐</span><span class="zh">终端 CLI · 107K ⭐</span></span></div>
@@ -163,7 +163,8 @@
     <a class="cta secondary" href="https://github.com/alloevil/coding-agent-internals/blob/main/README.md"><span class="en">📖 Full Comparison</span><span class="zh">📖 阅读完整对比</span></a>
 
     <footer>
-      <p>Last updated: 2026-08-28 · MIT License</p>
+      <p>Last updated: 2026-09-12 · MIT License</p>
+      <p><span class="en">Star counts are a GitHub API snapshot taken 2026-09-12.</span><span class="zh">Star 数为 2026-09-12 的 GitHub API 快照。</span></p>
       <p><a href="https://alloevil.github.io/projects/">More projects by allo</a></p>
       <p>Keywords: AI coding agent, Claude Code, Codex, omp, oh-my-pi, Hermes Agent, Cursor, ripgrep, LSP, DAP, hash-anchored edits, 2026</p>
     </footer>

@@ -8,8 +8,8 @@
 # 1. 克隆测试仓库（大仓库）
 git clone --depth 1 https://github.com/nicolo-ribaudo/tc39-proposal-signals tc39-signals
 
-# 2. 运行搜索 benchmark
-./search-bench.sh
+# 2. 运行搜索 benchmark（可传目标目录与搜索词；目录不存在时脚本会跳过）
+./search-bench.sh tc39-signals useSyncExternalStore
 
 # 3. 运行编辑 benchmark
 ./edit-bench.sh
@@ -33,6 +33,8 @@ time rg "useSyncExternalStore" /path/to/react --count
 # omp 内嵌 ripgrep（需在 omp 内部触发）
 # 通过 omp 的 search 工具调用
 ```
+
+`./search-bench.sh` 自动完成左侧一列：对目标仓库跑 1 次冷启动 + 10 次连续搜索，分别用固定字符串和正则，输出每次与累计耗时（优先 `rg`，无 `rg` 时回退 `grep`）。omp 的进程内列没有命令行入口，必须在 omp 会话内触发 `search` 工具，脚本不测量。
 
 ### 预期结果
 
@@ -72,69 +74,8 @@ time rg "useSyncExternalStore" /path/to/react --count
 
 ### 测试脚本
 
-```bash
-#!/bin/bash
-# edit-bench.sh - 编辑成功率测试
-
-set -e
-
-TEST_DIR=$(mktemp -d)
-cd "$TEST_DIR"
-
-# 用例 1: Whitespace 不匹配
-cat > test.py << 'EOF'
-def hello():
-    return "world"
-EOF
-
-# 模型输出（Tab 缩进）
-MODEL_OUTPUT='def hello():\n\treturn "universe"'
-
-# 纯文本替换测试
-python3 -c "
-content = open('test.py').read()
-old = '    return \"world\"'
-new = '\treturn \"universe\"'
-if old in content:
-    print('✅ 纯文本替换：匹配成功')
-else:
-    print('❌ 纯文本替换：匹配失败（whitespace 不匹配）')
-"
-
-# 用例 2: Stale file
-cat > test.py << 'EOF'
-def hello():
-    return "world"
-EOF
-
-# 模拟读取
-ORIGINAL=$(cat test.py)
-
-# 模拟外部修改
-echo 'def hello():
-    return "modified"' > test.py
-
-# 模拟纯文本替换（基于旧内容）
-python3 -c "
-old_content = '''def hello():
-    return \"world\"'''
-new_content = '''def hello():
-    return \"replaced\"'''
-current = open('test.py').read()
-if old_content in current:
-    result = current.replace(old_content, new_content)
-    open('test.py', 'w').write(result)
-    print('⚠️  纯文本替换：静默覆盖了外部修改！')
-else:
-    print('✅ 纯文本替换：旧内容不存在，匹配失败（stale file 被发现）')
-"
-
-echo "当前文件内容："
-cat test.py
-
-# 清理
-rm -rf "$TEST_DIR"
-```
+脚本即本目录下的 `./edit-bench.sh`，直接运行即可；上面的三个用例都包含在同一脚本里。
+脚本对每个用例只演示「纯文本替换」一侧的失败/成功，hash 锚定一侧需要在支持 hashline（omp）的 agent 内运行。
 
 ## Benchmark 3: Token 消耗
 

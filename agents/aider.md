@@ -29,7 +29,7 @@ Pair programming 模式——你和 AI 一起写代码。
 | 维度 | 实现方式 | 层级 |
 |------|---------|------|
 | 搜索 | rg shell 调用 | Level 1 |
-| 编辑 | diff + 行号定位 | Level 2 |
+| 编辑 | SEARCH/REPLACE diff 块（另有可选 unified diff），由 Aider 自己的 patcher 应用 | Level 2 |
 | Git | 深度集成，自动 commit | — |
 
 ## 优势
