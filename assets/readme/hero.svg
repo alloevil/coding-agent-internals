@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Coding Agent Internals — the same edit task in two tool implementations</title>
+  <desc id="desc">Two machine schematics side by side. Left: plain-text str_replace, attributed to Claude Code, Codex, Hermes and OpenCode, matches the edit target by a string the model reproduced, and is annotated with its failure modes, whitespace mismatch and stale overwrite. Right: hash-anchored editing with AST awareness in omp, matches by a tool-issued per-line hash, and is annotated as rejecting a stale anchor and avoiding the whitespace war. A level axis beneath runs from L1 plain-text edit, through L2 diff plus line numbers in Aider, to L3 hash-anchored.</desc>
+
+  <defs>
+    <clipPath id="panel-a-clip">
+      <rect x="56" y="142" width="520" height="198" rx="12"/>
+    </clipPath>
+    <clipPath id="panel-b-clip">
+      <rect x="624" y="142" width="520" height="198" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- board -->
+  <rect width="1200" height="420" rx="24" fill="#0d1117"/>
+
+  <!-- title block -->
+  <g id="title-block">
+    <text x="56" y="46" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">12 AGENTS · 5 DIMENSIONS · SOURCE-LEVEL · AS OF 2026-08-28</text>
+    <text x="1144" y="46" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">alloevil/coding-agent-internals</text>
+    <text x="56" y="94" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="48" font-weight="700" fill="#f0f6fc">Coding Agent Internals</text>
+    <text x="56" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="20" fill="#c9d1d9">How 12 coding agents actually implement their tools — the details that set the ceiling.</text>
+  </g>
+
+  <!-- machine A: plain-text str_replace -->
+  <g id="machine-a">
+    <rect x="56" y="142" width="520" height="198" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+
+    <text x="80" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#f0f6fc">Plain-text str_replace</text>
+    <text x="552" y="180" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">match by text</text>
+    <text x="80" y="204" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">Claude Code · Codex · Hermes · OpenCode</text>
+
+    <g clip-path="url(#panel-a-clip)">
+      <rect x="80" y="218" width="472" height="92" rx="10" fill="#0d1117" stroke="#21262d" stroke-width="1.5"/>
+      <rect x="88" y="260" width="376" height="26" rx="6" fill="#58a6ff" opacity="0.14"/>
+      <rect x="88" y="260" width="3" height="26" rx="1.5" fill="#58a6ff"/>
+      <text x="104" y="246" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#8b949e">function rank(items) {</text>
+      <text x="104" y="274" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#f0f6fc"> return items.sort(byScore);</text>
+      <text x="104" y="302" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#8b949e">}</text>
+    </g>
+
+    <text x="80" y="328" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" fill="#8b949e">✗ whitespace mismatch  ✗ stale overwrite</text>
+  </g>
+
+  <!-- machine B: hash-anchored + AST -->
+  <g id="machine-b">
+    <rect x="624" y="142" width="520" height="198" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+
+    <text x="648" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#f0f6fc">Hash-anchored + AST</text>
+    <text x="1120" y="180" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">match by hash</text>
+    <text x="648" y="204" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">omp (Oh My Pi)</text>
+
+    <g clip-path="url(#panel-b-clip)">
+      <rect x="648" y="218" width="472" height="92" rx="10" fill="#0d1117" stroke="#21262d" stroke-width="1.5"/>
+      <rect x="656" y="260" width="440" height="26" rx="6" fill="#3fb950" opacity="0.14"/>
+      <rect x="656" y="260" width="3" height="26" rx="1.5" fill="#3fb950"/>
+      <text x="672" y="246" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#8b949e"><tspan fill="#3fb950">a7c1</tspan>  function rank(items) {</text>
+      <text x="672" y="274" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#f0f6fc"><tspan fill="#3fb950">4f8b</tspan>  return items.sort(byScore);</text>
+      <text x="672" y="302" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#8b949e"><tspan fill="#3fb950">e02d</tspan>  }</text>
+    </g>
+
+    <text x="648" y="328" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" fill="#3fb950">✓ stale anchor rejected  ✓ no whitespace war</text>
+  </g>
+
+  <!-- shared task bridge between the two machines -->
+  <g id="task-bridge">
+    <text x="600" y="241" text-anchor="middle" transform="rotate(-90 600 241)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">same edit task</text>
+  </g>
+
+  <!-- implementation-level axis -->
+  <g id="level-axis">
+    <text x="56" y="384" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8b949e">IMPLEMENTATION LEVEL</text>
+    <line x1="296" y1="378" x2="1132" y2="378" stroke="#30363d" stroke-width="1.5"/>
+    <path d="M1132 371 L1146 378 L1132 385 Z" fill="#30363d"/>
+    <line x1="316" y1="373" x2="316" y2="383" stroke="#58a6ff" stroke-width="2"/>
+    <line x1="600" y1="373" x2="600" y2="383" stroke="#8b949e" stroke-width="2"/>
+    <line x1="884" y1="373" x2="884" y2="383" stroke="#3fb950" stroke-width="2"/>
+    <text x="316" y="404" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="20" fill="#c9d1d9">L1 · plain-text edit</text>
+    <text x="600" y="404" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" fill="#8b949e">L2 · diff + line numbers · Aider</text>
+    <text x="884" y="404" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="20" fill="#c9d1d9">L3 · hash-anchored</text>
+  </g>
+</svg>

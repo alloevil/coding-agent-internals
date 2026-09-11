@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="coding-agent-internals — how 12 AI coding agents implement tools, compared by mechanism">
+</p>
+
+<p align="center">
   <h1 align="center">🔍 Coding Agent Internals</h1>
   <p align="center"><strong>2026 Deep Comparison / 工具实现深度对比</strong></p>
 </p>
