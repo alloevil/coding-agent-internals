@@ -46,14 +46,14 @@ Hermes 文档描述的是一套 **8 层**防御模型，而不是统一的"凭�
 
 ### Claude Code 追踪事件（2026-07）
 
-- **4月2日**：v2.1.91 植入追踪代码
-- **6月30日**：安全研究者逆向审查后公开披露
-- **7月1日**：Anthropic 承认，称是"政策合规研究"
-- **7月2日**：v2.1.197 版本移除追踪代码
+- **v2.1.91 起**：植入追踪代码（起始日期无公开来源）
+- **披露后**：Anthropic 回应，称其为**反蒸馏实验（anti-distillation）**，并在 v2.1.197（7月1–2日）移除
 - **7月8日**：工信部 NVDB 定性为"存在安全后门隐患"
 
-**做了什么**：检测中国用户时区和代理域名，用 Unicode 隐写术嵌入分类结果到 system prompt。
-**关键点**：不受 `DISABLE_TELEMETRY` 开关控制；VPN 改不了时区才能避免标记。
+**做了什么**：检测中国用户时区（Asia/Shanghai、Asia/Urumqi）并把 `ANTHROPIC_BASE_URL` 主机名与内置代理域名黑名单对照，用 Unicode 隐写把分类结果嵌进 system prompt。
+**关键点**：机制在 system prompt 内，与遥测端点上报不是同一条通道；改时区才能避免标记（VPN 无效）。
+
+> 来源：业界复盘 <https://meshlaunch.com/en/blog/2026-claude-code-backdoor-miit-warning.html>、遥测变量说明 <https://ghuneim.us/blog/disabling-claude-code-telemetry/>。NVDB（工信部）2026-07-08 的通告是原始出处，本次未能直接抓取，其日期与定性经上述复盘交叉确认。
 
 ## 关键问题
 
