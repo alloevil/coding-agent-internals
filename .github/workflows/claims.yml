@@ -19,8 +19,7 @@ jobs:
     name: published numbers still reproduce
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      # No install step. The checks read committed files with python3 and git — both on the runner — and run
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4  # No install step. The checks read committed files with python3 and git — both on the runner — and run
       # the two shell benchmark helpers, which fall back to grep when rg is absent and use a temp directory,
       # so nothing is fetched and no dependency is installed. search-bench.sh skips cleanly when its default
       # target (./tc39-signals) is missing, which is exactly the state of a fresh checkout.
