@@ -1,0 +1,22 @@
+{
+  "_snapshot": {
+    "source": "https://pypi.org/pypi/hermes-agent/json",
+    "fetched": "2026-09-14",
+    "nature": "point-in-time capture; freshness is not checked",
+    "note": "the project's current version and each version's earliest upload time, trimmed from the JSON API document"
+  },
+  "info_version": "0.19.0",
+  "releases": {
+    "0.13.0": "2026-05-14T18:49:29.771202Z",
+    "0.14.0": "2026-05-18T11:36:10.781889Z",
+    "0.15.0": "2026-05-28T17:47:25.405522Z",
+    "0.15.1": "2026-05-29T01:13:29.647070Z",
+    "0.15.2": "2026-05-29T13:42:10.866717Z",
+    "0.16.0": "2026-06-06T00:57:01.968289Z",
+    "0.17.0": "2026-06-19T19:40:14.014850Z",
+    "0.18.0": "2026-07-01T20:09:21.496872Z",
+    "0.18.1": "2026-07-08T01:16:33.563553Z",
+    "0.18.2": "2026-07-08T03:12:46.369935Z",
+    "0.19.0": "2026-07-20T18:37:26.417523Z"
+  }
+}

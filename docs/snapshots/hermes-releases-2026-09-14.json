@@ -1,0 +1,175 @@
+{
+  "_snapshot": {
+    "source": "https://api.github.com/repos/NousResearch/hermes-agent/releases?per_page=100",
+    "fetched": "2026-09-14",
+    "nature": "point-in-time capture; freshness is not checked",
+    "note": "all 33 releases returned by that request, trimmed to tag_name/published_at/prerelease; the list is newest first, so the last entry is the earliest tag"
+  },
+  "releases": [
+    {
+      "tag_name": "v2026.9.11",
+      "published_at": "2026-09-11T19:20:31Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.9.7",
+      "published_at": "2026-09-07T22:17:01Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.8.31",
+      "published_at": "2026-08-31T19:29:49Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.8.27",
+      "published_at": "2026-08-27T12:06:53Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.8.19",
+      "published_at": "2026-08-21T12:16:39Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.8.18",
+      "published_at": "2026-08-18T07:26:46Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.8.16.2",
+      "published_at": "2026-08-17T18:43:27Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.8.16",
+      "published_at": "2026-08-16T17:33:22Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.8.13",
+      "published_at": "2026-08-13T20:37:37Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.8.3",
+      "published_at": "2026-08-03T16:57:52Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.7.30",
+      "published_at": "2026-07-30T23:45:37Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.7.20",
+      "published_at": "2026-07-20T18:35:55Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.7.7.2",
+      "published_at": "2026-07-08T03:11:22Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.7.7",
+      "published_at": "2026-07-08T01:15:00Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.7.1",
+      "published_at": "2026-07-01T20:08:06Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.6.19",
+      "published_at": "2026-06-19T19:39:06Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.6.5",
+      "published_at": "2026-06-06T00:55:58Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.5.29.2",
+      "published_at": "2026-05-29T13:37:26Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.5.29",
+      "published_at": "2026-05-29T01:12:15Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.5.28",
+      "published_at": "2026-05-28T17:46:09Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.5.16",
+      "published_at": "2026-05-16T09:59:15Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.5.7",
+      "published_at": "2026-05-07T16:23:08Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.4.30",
+      "published_at": "2026-04-30T18:31:21Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.4.23",
+      "published_at": "2026-04-23T22:32:13Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.4.16",
+      "published_at": "2026-04-16T19:53:25Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.4.13",
+      "published_at": "2026-04-13T18:52:41Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.4.8",
+      "published_at": "2026-04-08T11:56:44Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.4.3",
+      "published_at": "2026-04-03T18:15:29Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.3.30",
+      "published_at": "2026-03-30T15:30:14Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.3.28",
+      "published_at": "2026-03-28T20:12:05Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.3.23",
+      "published_at": "2026-03-24T05:34:23Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.3.17",
+      "published_at": "2026-03-17T07:56:07Z",
+      "prerelease": false
+    },
+    {
+      "tag_name": "v2026.3.12",
+      "published_at": "2026-03-12T10:07:34Z",
+      "prerelease": false
+    }
+  ]
+}

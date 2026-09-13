@@ -1,8 +1,8 @@
 {
-  "$comment": "Executable receipts for the numbers coding-agent-internals publishes in prose - the page and table counts on the README's first screen and in index.html's JSON-LD, the shape of the twelve agent pages, the benchmark helper scripts, and the star snapshots the pages pin. Every figure that can be recomputed from committed data carries a `check.cmd`; every figure quoted from an upstream project carries `check.manual` with the upstream URL in the reason, because no file in this repository derives it and a check must run offline. Run with `python3 -m verify_claims --root . run`; CI runs it via .github/workflows/claims.yml. Note what this file is not: the benchmark result tables stay 预期结果 (hypotheses, not measurements) and are listed under `benchmark-expected-results` as manual - nothing here claims a measured number of this project's own.",
+  "$comment": "Executable receipts for the numbers coding-agent-internals publishes in prose - the page and table counts on the README's first screen and in index.html's JSON-LD, the shape of the twelve agent pages, the benchmark helper scripts, and the star snapshots the pages pin. Every figure that can be recomputed from committed data carries a `check.cmd`; every figure quoted from an upstream project is checked against a committed point-in-time capture of that source under `docs/snapshots/` (URL and fetch date in the file header; freshness is not checked), so the receipt parses the capture and fails if the capture is edited to another value. What stays manual is what no capture can settle: the three live star counts the pages pin, the four pages' unsourced vendor ranges, the price row, and the benchmark tables' hypotheses - each names the missing artifact in `check.manual`. Run with `python3 -m verify_claims --root . run`; CI runs it via .github/workflows/claims.yml. Note what this file is not: the benchmark result tables stay 预期结果 (hypotheses, not measurements) and are listed under `benchmark-expected-results` as manual - nothing here claims a measured number of this project's own.",
   "project": "coding-agent-internals",
   "repository": "https://github.com/alloevil/coding-agent-internals",
-  "updated": "2026-09-13",
+  "updated": "2026-09-14",
   "claims": [
     {
       "id": "agents-page-count",
@@ -369,12 +369,16 @@
       "claim": "omp publishes 60+ model providers, 31 built-in tools, 14 LSP operations, 28 DAP operations and ~80k lines of Rust core - the figures the README matrix, agents/omp.md, index.html and dimensions/search.md all quote.",
       "value": "60+ / 31 / 14 / 28 / ~80k",
       "metric": "the headline counts on the upstream oh-my-pi README (providers, built-in tools, LSP ops, DAP ops, Rust lines)",
-      "method": "The upstream README's headline line reads `**60+** providers · **31** built-in tools · **14** lsp ops · **28** dap ops · **~80k** lines of Rust core.` agents/omp.md copies that line verbatim under its 基本信息 table with the read date 2026-09-12, and both README matrices carry the 60+ providers cell from it.",
-      "repro": "curl -s https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md | sed -n '27p'",
-      "evidence": "https://github.com/can1357/oh-my-pi#readme",
-      "verified": "2026-09-13",
+      "method": "The five headline figures are quoted from the upstream README's headline line, captured verbatim in docs/snapshots/oh-my-pi-readme-2026-09-14. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/omp.md copies the same line under its 基本信息 table, and both README matrices carry the 60+ providers cell from it.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/oh-my-pi-readme-2026-09-14.md',encoding='utf-8').read();print(re.search(r'\\*\\*(\\d+\\+)\\*\\* providers.*',s).group(0))\"",
+      "evidence": "docs/snapshots/oh-my-pi-readme-2026-09-14.md; agents/omp.md 基本信息 table; README.md matrices",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "The counts are published by the upstream project: no committed file in this repository derives them, and re-reading them needs network access to github.com, which a claim check must not require. Corroborated on 2026-09-13 by fetching the upstream README, where line 27 still reads exactly those five figures. The part this repository can recompute - that its pages quote one consistent set of LSP/DAP figures - is `lsp-dap-crosspage`."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/oh-my-pi-readme-2026-09-14.md',encoding='utf-8').read()\nm=re.search(r'\\*\\*(\\d+\\+)\\*\\* providers · \\*\\*(\\d+)\\*\\* built-in tools · \\*\\*(\\d+)\\*\\* lsp ops · \\*\\*(\\d+)\\*\\* dap ops · \\*\\*(~?\\d+k)\\*\\* lines of Rust core',s)\nprint(' / '.join(m.groups()))\"",
+        "expect": {
+          "equals": "60+ / 31 / 14 / 28 / ~80k"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -383,12 +387,16 @@
       "claim": "The omp page's four-layer architecture quotes the upstream per-crate Rust line counts: pi-shell 38,000, pi-natives 25,000, pi-walker 5,200, pi-iso 3,300, pi-ast 2,900, pi-voice 1,000.",
       "value": "38,000 / 25,000 / 5,200 / 3,300 / 2,900 / 1,000",
       "metric": "the \"Per crate, code lines only\" table of the upstream oh-my-pi README",
-      "method": "agents/omp.md reproduces all six rows with the crate names; dimensions/search.md quotes two of them (pi-shell 38,000 for the embedded shell, pi-natives' grep module for in-process search).",
-      "repro": "curl -s https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md | grep -n '38,000'",
-      "evidence": "https://github.com/can1357/oh-my-pi#readme",
-      "verified": "2026-09-13",
+      "method": "The receipt parses the README's \"Per crate, code lines only\" table out of the captured snapshot and prints the six rows in the order agents/omp.md lists them. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/oh-my-pi-readme-2026-09-14.md',encoding='utf-8').read();print(re.findall(r'^\\|\\s*pi-\\w+.*',s,re.M))\"",
+      "evidence": "docs/snapshots/oh-my-pi-readme-2026-09-14.md; agents/omp.md crate table; dimensions/search.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "An upstream table, not a local measurement: the line counts describe the oh-my-pi source tree, which is not committed here, and reading them needs network access to the oh-my-pi repository. Corroborated on 2026-09-13 (the six rows are unchanged)."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/oh-my-pi-readme-2026-09-14.md',encoding='utf-8').read()\nrows=dict(re.findall(r'^\\|\\s*(pi-\\w+)\\s*\\|[^|]*\\|\\s*([\\d,]+)\\s*\\|$',s,re.M))\nprint(' / '.join(rows[c] for c in ['pi-shell','pi-natives','pi-walker','pi-iso','pi-ast','pi-voice']))\"",
+        "expect": {
+          "equals": "38,000 / 25,000 / 5,200 / 3,300 / 2,900 / 1,000"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -397,12 +405,16 @@
       "claim": "The omp page's pi-natives module breakdown quotes the upstream per-module line counts: grep 3,280, text 2,070, keys 1,740, ast 1,510, pty 630, highlight 550.",
       "value": "3,280 / 2,070 / 1,740 / 1,510 / 630 / 550",
       "metric": "the pi-natives module table of the upstream oh-my-pi README",
-      "method": "agents/omp.md lists the six modules the search and code-intelligence dimensions care about; dimensions/search.md quotes grep 3,280 as the code size of the in-process engine.",
-      "repro": "curl -s https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md | grep -n '3,280'",
-      "evidence": "https://github.com/can1357/oh-my-pi#readme",
-      "verified": "2026-09-13",
+      "method": "The receipt parses the pi-natives module table of the captured upstream README (23 rows upstream; the page quotes six) and prints those six. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/oh-my-pi-readme-2026-09-14.md',encoding='utf-8').read();print(re.findall(r'^\\|\\s*(?:grep|text|keys|ast|pty|highlight)\\s+\\|.*',s,re.M))\"",
+      "evidence": "docs/snapshots/oh-my-pi-readme-2026-09-14.md; agents/omp.md pi-natives table; dimensions/search.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "An upstream table (23 modules upstream; the page quotes six), not derivable from anything committed here - re-reading it needs network access to the oh-my-pi repository. Corroborated on 2026-09-13."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/oh-my-pi-readme-2026-09-14.md',encoding='utf-8').read()\nrows=dict(re.findall(r'^\\|\\s*(\\w+)\\s*\\|[^|]*\\|[^|]*\\|\\s*([\\d,]+)\\s*\\|$',s,re.M))\nprint(' / '.join(rows[m] for m in ['grep','text','keys','ast','pty','highlight']))\"",
+        "expect": {
+          "equals": "3,280 / 2,070 / 1,740 / 1,510 / 630 / 550"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -411,12 +423,16 @@
       "claim": "omp's hash-anchored editing claims a 61% output-token reduction: the upstream README's comparison row reads `Grok 4 Fast | -61% tokens`, and its Hashline section says Grok 4 Fast spends 61% fewer output tokens on the same work.",
       "value": "-61% output tokens",
       "metric": "the upstream README's harness-comparison table row and its Hashline section",
-      "method": "agents/omp.md and dimensions/editing.md both carry the figure, and both label it a vendor self-report (厂商自报，非本仓库实测), which is this repository's own hedge on it.",
-      "repro": "curl -s https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md | grep -n '61%'",
-      "evidence": "https://github.com/can1357/oh-my-pi#readme",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the upstream README's comparison row (-61% tokens) and its Hashline sentence (61% fewer output tokens) out of the captured snapshot and fails if the two disagree. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/omp.md and dimensions/editing.md label it a vendor self-report (厂商自报，非本仓库实测).",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/oh-my-pi-readme-2026-09-14.md',encoding='utf-8').read();print(re.search(r'−\\d+% tokens',s).group(0))\"",
+      "evidence": "docs/snapshots/oh-my-pi-readme-2026-09-14.md; agents/omp.md; dimensions/editing.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor-published measurement, not this repository's: reproducing it would mean re-running the vendor's edit benchmark against its model, which is neither committed here nor offline. The pages mark it vendor-reported; corroborated on 2026-09-13 (README line 119 and section 11 both carry 61%)."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/oh-my-pi-readme-2026-09-14.md',encoding='utf-8').read()\nrow=re.search(r'−(\\d+)% tokens',s)\nsec=re.search(r'spends (\\d+)% fewer output tokens',s)\nprint('-' + row.group(1) + '% output tokens' if row.group(1) == sec.group(1) else 'mismatch %s/%s' % (row.group(1), sec.group(1)))\"",
+        "expect": {
+          "equals": "-61% output tokens"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -430,7 +446,7 @@
       "evidence": "https://api.github.com/repos/can1357/oh-my-pi",
       "verified": "2026-09-13",
       "check": {
-        "manual": "A live GitHub figure that moves continuously - 30,667 at the 2026-09-12 reading, 30,863 when re-read on 2026-09-13 - and reading it needs api.github.com, which a claim check must not require. The reason the pages print a precise count and date is exactly this: the number is a snapshot, and no committed file here derives it."
+        "manual": "api.github.com is a live counter and this repository never captured the response it read, so no committed file derives 30,667 at 2026-09-12. Two reads on 2026-09-14 disagree with the pin: the repository API answers 30,965, and GitHub's privacy-safe star-history endpoint (shipped 2026-09-04, GET /repos/{owner}/{repo}/stargazers/history) reconstructs end-of-day 2026-09-12 as 30,871 = 30,965 minus the 94 stars its week bucket shows for 2026-09-13 - 204 above from the pinned value. The site-vs-page half is machine-checked by `star-snapshot-consistency`; only the reading itself needs the network. Missing artifact: the API response the author read on 2026-09-12. A capture taken today cannot support the published number, and a receipt asserting today's value would be checking a different fact."
       },
       "as_of": "2026-09-12"
     },
@@ -444,7 +460,7 @@
       "evidence": "https://api.github.com/repos/NousResearch/hermes-agent",
       "verified": "2026-09-13",
       "check": {
-        "manual": "A live GitHub figure that moves continuously - 244,530 at the 2026-09-12 reading, 244,938 when re-read on 2026-09-13 - and reading it needs api.github.com, which a claim check must not require. The reason the pages print a precise count and date is exactly this: the number is a snapshot, and no committed file here derives it."
+        "manual": "api.github.com is a live counter and this repository never captured the response it read, so no committed file derives 244,530 at 2026-09-12. Two reads on 2026-09-14 disagree with the pin: the repository API answers 245,159, and GitHub's privacy-safe star-history endpoint (shipped 2026-09-04, GET /repos/{owner}/{repo}/stargazers/history) reconstructs end-of-day 2026-09-12 as 244,933 = 245,159 minus the 226 stars its week bucket shows for 2026-09-13 - 403 above from the pinned value. The site-vs-page half is machine-checked by `star-snapshot-consistency`; only the reading itself needs the network. Missing artifact: the API response the author read on 2026-09-12. A capture taken today cannot support the published number, and a receipt asserting today's value would be checking a different fact."
       },
       "as_of": "2026-09-12"
     },
@@ -458,7 +474,7 @@
       "evidence": "https://api.github.com/repos/google-gemini/gemini-cli",
       "verified": "2026-09-13",
       "check": {
-        "manual": "A live GitHub figure that moves continuously - 106,920 at the 2026-09-12 reading, 106,948 when re-read on 2026-09-13 - and reading it needs api.github.com, which a claim check must not require. The reason the pages print a precise count and date is exactly this: the number is a snapshot, and no committed file here derives it."
+        "manual": "api.github.com is a live counter and this repository never captured the response it read, so no committed file derives 106,920 at 2026-09-12. Two reads on 2026-09-14 disagree with the pin: the repository API answers 106,965, and GitHub's privacy-safe star-history endpoint (shipped 2026-09-04, GET /repos/{owner}/{repo}/stargazers/history) reconstructs end-of-day 2026-09-12 as 106,938 = 106,965 minus the 27 stars its week bucket shows for 2026-09-13 - 18 above from the pinned value. The reconstruction lands closest here - 18 stars off rather than hundreds - but \"close\" is not the number the page publishes, so it stays manual. The site-vs-page half is machine-checked by `star-snapshot-consistency`. Missing artifact: the API response the author read on 2026-09-12. A capture taken today cannot support the published number, and a receipt asserting today's value would be checking a different fact."
       },
       "as_of": "2026-09-12"
     },
@@ -467,12 +483,16 @@
       "claim": "Hermes' built-in memory is two files with documented caps: MEMORY.md at 2,200 characters (~800 tokens) and USER.md at 1,375 characters (~500 tokens), injected into the system prompt as a frozen snapshot.",
       "value": "2,200 chars (~800 tokens) / 1,375 chars (~500 tokens)",
       "metric": "the caps in Hermes' memory documentation",
-      "method": "The memory page and the memory-providers page both state the two caps; agents/hermes.md's 记忆 section and its Token-overhead table repeat them, and dimensions/memory.md quotes the character counts.",
-      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/features/memory | grep -o '2,200 chars[^U]*USER.md[^)]*)'",
-      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/features/memory",
-      "verified": "2026-09-13",
+      "method": "The receipt parses the two rows of the docs' memory-file table (MEMORY.md, USER.md) out of the captured snapshot. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/hermes-memory-docs-2026-09-14.md',encoding='utf-8').read();print(re.findall(r'[\\d,]+ chars \\(~\\d+ tokens\\)',s))\"",
+      "evidence": "docs/snapshots/hermes-memory-docs-2026-09-14.md; agents/hermes.md 记忆 section; dimensions/memory.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "The caps are set and published by the Hermes docs (upstream, not committed here) and re-reading them needs the network. Corroborated on 2026-09-13: the fetched memory page still reads `MEMORY.md ... 2,200 chars (~800 tokens)` and `USER.md ... 1,375 chars (~500 tokens)`."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/hermes-memory-docs-2026-09-14.md',encoding='utf-8').read()\na=re.search(r'([\\d,]+) chars \\(~(\\d+) tokens\\)',s)\nb=re.search(r'([\\d,]+) chars \\(~(\\d+) tokens\\)',s[a.end():])\nprint('%s chars (~%s tokens) / %s chars (~%s tokens)' % (a.group(1),a.group(2),b.group(1),b.group(2)))\"",
+        "expect": {
+          "equals": "2,200 chars (~800 tokens) / 1,375 chars (~500 tokens)"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -481,12 +501,16 @@
       "claim": "Hermes ships eight optional external memory-provider plugins - honcho, openviking, mem0, hindsight, holographic, retaindb, byterover, supermemory - of which one can be active at a time.",
       "value": "8 providers",
       "metric": "the provider plugin list in Hermes' memory documentation",
-      "method": "agents/hermes.md's memory section names all eight and dimensions/memory.md repeats the count and the list; index.html's matrix cell says \"built-in + 8 providers\".",
-      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/features/memory | grep -o -i 'honcho\\|openviking\\|mem0\\|hindsight\\|holographic\\|retaindb\\|byterover\\|supermemory' | sort -u",
-      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the docs' plugin sentence out of the captured snapshot and prints the count it states together with the sorted names it lists, so a renamed or dropped provider fails the check. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/hermes-memory-docs-2026-09-14.md',encoding='utf-8').read();print(re.search(r'ships with \\d+ external memory provider plugins[^.]*\\.',s).group(0))\"",
+      "evidence": "docs/snapshots/hermes-memory-docs-2026-09-14.md; agents/hermes.md memory section; dimensions/memory.md; index.html matrix cell",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "An upstream plugin list: the plugins are not in this repository and the docs need the network to re-read. Corroborated on 2026-09-13 - the memory page carries all eight names."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/hermes-memory-docs-2026-09-14.md',encoding='utf-8').read()\nm=re.search(r'ships with (\\d+) external memory provider plugins — including ([^.]+)\\.',s)\nnames=re.split(r',\\s*and\\s+|,\\s*',m.group(2))\nprint('%s providers: %s' % (m.group(1), ', '.join(sorted(n.lower() for n in names))))\"",
+        "expect": {
+          "equals": "8 providers: byterover, hindsight, holographic, honcho, mem0, openviking, retaindb, supermemory"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -495,12 +519,16 @@
       "claim": "Hermes documents an eight-layer security model (user authorization, dangerous-command approval, file-write safety, container isolation, MCP credential filtering, context-file scanning, cross-session isolation, input sanitisation) with no unified \"Credential Guard\" chokepoint and no credential-access audit log.",
       "value": "8 layers",
       "metric": "the layer list in Hermes' security documentation",
-      "method": "agents/hermes.md's security section and dimensions/security.md both enumerate the eight layers and both state explicitly that the docs name no unified credential chokepoint - a correction this repository made rather than the flowery summary it previously carried.",
-      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/security | grep -o 'eight layers[^.]*'",
-      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/security",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the docs' layer count out of the captured snapshot and re-finds the eight layer names agents/hermes.md and dimensions/security.md enumerate; a missing or renamed layer drops out of the printed list and fails the check. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/hermes-security-docs-2026-09-14.md',encoding='utf-8').read();print(re.search(r'The security model has \\w+ layers:.*',s).group(0))\"",
+      "evidence": "docs/snapshots/hermes-security-docs-2026-09-14.md; agents/hermes.md security section; dimensions/security.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "The layer list is upstream prose, not data committed here; re-reading it needs the network. Corroborated on 2026-09-13: the security page reads \"The security model has eight layers\", lists the same eight, and documents `approvals.mode: smart | manual | off` plus the Docker/Singularity/Modal/Daytona/Vercel container bypass."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/hermes-security-docs-2026-09-14.md',encoding='utf-8').read()\nw=re.search(r'The security model has (\\w+) layers:',s).group(1)\nnames=['User authorization','Dangerous command approval','File write safety','Container isolation','MCP credential filtering','Context file scanning','Cross-session isolation','Input sanitization']\nprint('%s layers: %s' % (w, ', '.join(n for n in names if n in s)))\"",
+        "expect": {
+          "equals": "eight layers: User authorization, Dangerous command approval, File write safety, Container isolation, MCP credential filtering, Context file scanning, Cross-session isolation, Input sanitization"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -509,12 +537,16 @@
       "claim": "Hermes' mixture-of-agents page reports HermesBench scores for a two-model MoA preset: 0.8202 for the opus-4.8 aggregator with a gpt-5.5 reference, against 0.7607 for claude-opus-4.8 alone and 0.7412 for gpt-5.5 alone.",
       "value": "0.8202 / 0.7607 / 0.7412",
       "metric": "the HermesBench table on the upstream mixture-of-agents page",
-      "method": "agents/hermes.md quotes all three with the vendor-report label, and dimensions/subagents.md quotes two of them (0.8202 vs 0.7607).",
-      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/features/mixture-of-agents | grep -o '0.8202[^<]*'",
-      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/features/mixture-of-agents",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the three HermesBench scores out of the captured MoA page, in table order (MoA preset, opus-4.8 alone, gpt-5.5 alone). The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/hermes.md quotes all three with the vendor-report label; dimensions/subagents.md quotes two.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/hermes-mixture-of-agents-2026-09-14.md',encoding='utf-8').read();print(re.findall(r'0\\.\\d+',s))\"",
+      "evidence": "docs/snapshots/hermes-mixture-of-agents-2026-09-14.md; agents/hermes.md; dimensions/subagents.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor-published benchmark, not this repository's: the harness and the models are upstream, and re-reading the table needs the network. Corroborated on 2026-09-13 - the table still reads 0.8202 / 0.7607 / 0.7412."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/hermes-mixture-of-agents-2026-09-14.md',encoding='utf-8').read()\nprint(' / '.join(re.findall(r'\\b(0\\.\\d+)\\b',s)[:3]))\"",
+        "expect": {
+          "equals": "0.8202 / 0.7607 / 0.7412"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -523,12 +555,16 @@
       "claim": "Hermes accepts any OpenAI-compatible provider and its Nous Portal subscription offers 300+ models; the upstream README names no total provider count, so the pages publish no provider number for Hermes.",
       "value": "300+ models (Nous Portal); no provider count published upstream",
       "metric": "the upstream README's model statement and Nous Portal's model count",
-      "method": "agents/hermes.md's routing section quotes the upstream README line and then says explicitly that upstream gives no provider count, publishing the 300+ model figure instead; the README matrix's Model Lock cell says \"any OpenAI-compatible\" rather than a number.",
-      "repro": "curl -s https://github.com/NousResearch/hermes-agent#readme | grep -o 'Use any model you want[^.]*'",
-      "evidence": "https://github.com/NousResearch/hermes-agent#readme",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the README's model statement out of the captured snapshot: it prints the Nous Portal model count and whether the README states any total provider count (it does not - the excerpt carries \"your own endpoint, and many others\" instead). The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/hermes-readme-2026-09-14.md',encoding='utf-8').read();print(re.findall(r'\\d+\\+ models|Use any model you want.*',s))\"",
+      "evidence": "docs/snapshots/hermes-readme-2026-09-14.md; agents/hermes.md routing section; README.md Model Lock cell",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "Both halves are upstream statements - the README's routing sentence and Nous Portal's catalogue - and neither is committed here; re-reading them needs the network. Corroborated on 2026-09-13 for the README sentence; the 300+ figure is the vendor's own published count, not a measurement."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/hermes-readme-2026-09-14.md',encoding='utf-8').read()\nn=re.search(r'(\\d+\\+) models',s).group(1)\ntot=re.findall(r'\\b\\d+\\+? providers\\b',s)\nprint('%s models (Nous Portal); provider count published: %s' % (n, tot[0] if tot else 'none'))\"",
+        "expect": {
+          "equals": "300+ models (Nous Portal); provider count published: none"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -537,12 +573,16 @@
       "claim": "Hermes' session_search uses a SQLite FTS5 index with no LLM call, documented at roughly a 20 ms query.",
       "value": "~20 ms FTS5 query, no LLM call",
       "metric": "the memory page's comparison-table latency for FTS5 search",
-      "method": "agents/hermes.md's memory section and Token-overhead table both carry it, each sourcing the memory docs.",
-      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/features/memory | grep -o '~20ms[^|]*'",
-      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/features/memory",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the session-search row of the docs' comparison table out of the captured snapshot: the query latency, plus the cost cell that states there is no LLM call. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/hermes-memory-docs-2026-09-14.md',encoding='utf-8').read();print(re.findall(r'~\\d+ms FTS5 query.*|Free — no LLM calls',s))\"",
+      "evidence": "docs/snapshots/hermes-memory-docs-2026-09-14.md; agents/hermes.md memory section",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A latency figure documented upstream; measuring it here would mean installing Hermes and building an index, which is neither committed nor offline. Corroborated on 2026-09-13 (the page reads \"~20ms FTS5 query, ~1ms scroll\")."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/hermes-memory-docs-2026-09-14.md',encoding='utf-8').read()\nsp=re.search(r'~(\\d+)ms FTS5 query',s).group(1)\nprint('~%s ms FTS5 query, %s' % (sp, 'no LLM call' if 'Free — no LLM calls' in s else 'cost column changed'))\"",
+        "expect": {
+          "equals": "~20 ms FTS5 query, no LLM call"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -551,12 +591,16 @@
       "claim": "Hermes' automatic compaction fires at `threshold: 0.50` (prompt at 50% of the context window), and the docs' worked example compresses 45 messages / ~95K tokens into 25 messages / ~45K tokens.",
       "value": "threshold 0.50; 45 msgs ~95K -> 25 msgs ~45K",
       "metric": "the context-compression documentation's default threshold and worked example",
-      "method": "agents/hermes.md's Token-overhead table quotes both the threshold and the example numbers, sourced to the developer-guide page on context compression and caching.",
-      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching | grep -o 'threshold[^,]*'",
-      "evidence": "https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the docs' default threshold out of the captured snapshot together with the two headings of its worked before/after example. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/hermes.md's Token-overhead table quotes both.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/hermes-context-compression-2026-09-14.md',encoding='utf-8').read();print(re.findall(r'default: [\\d.]+ = \\d+%|Before Compression.*|After Compression.*',s))\"",
+      "evidence": "docs/snapshots/hermes-context-compression-2026-09-14.md; agents/hermes.md Token-overhead table",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "Upstream documentation figures for a run of Hermes itself: no committed file derives them and re-reading needs the network. Corroborated on 2026-09-13 as the page's default and example, not as a measurement this repository made."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/hermes-context-compression-2026-09-14.md',encoding='utf-8').read()\nth=re.search(r'default: ([\\d.]+) = (\\d+)%',s).group(1)\nb=re.search(r'Before Compression \\((\\d+) messages, ~(\\d+)K tokens\\)',s)\na=re.search(r'After Compression \\((\\d+) messages, ~(\\d+)K tokens\\)',s)\nprint('threshold %s; %s msgs ~%sK -> %s msgs ~%sK' % (th, b.group(1), b.group(2), a.group(1), a.group(2)))\"",
+        "expect": {
+          "equals": "threshold 0.50; 45 msgs ~95K -> 25 msgs ~45K"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -565,12 +609,16 @@
       "claim": "Hermes' plugin documentation claims multi-turn prompt-cache savings of 75%+ of input tokens, because the system prompt is held constant across turns.",
       "value": "75%+ input tokens",
       "metric": "the claim in the upstream plugin developer-guide page",
-      "method": "agents/hermes.md's Token-overhead table carries it with the upstream link, labelled as the documentation's claim.",
-      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/developer-guide/plugins | grep -o '75%[^.]*'",
-      "evidence": "https://hermes-agent.nousresearch.com/docs/developer-guide/plugins",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the docs' prompt-cache sentence out of the captured snapshot. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/hermes.md's Token-overhead table carries the figure with the upstream link, labelled as the documentation's claim.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/hermes-plugin-docs-2026-09-14.md',encoding='utf-8').read();print(re.search(r'[^.]*saves \\d+%\\+[^.]*\\.',s).group(0))\"",
+      "evidence": "docs/snapshots/hermes-plugin-docs-2026-09-14.md; agents/hermes.md Token-overhead table",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor claim about the vendor's own cache behaviour; verifying it needs a live Hermes install and API calls, neither committed here nor offline. Published on the page as a documentation claim, corroborated upstream on 2026-09-13."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/hermes-plugin-docs-2026-09-14.md',encoding='utf-8').read()\nprint(re.search(r'saves (\\d+%\\+) on input tokens',s).group(1) + ' input tokens')\"",
+        "expect": {
+          "equals": "75%+ input tokens"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -579,12 +627,16 @@
       "claim": "Claude Code's context window is 1M tokens (Opus 4.8) - the model's published window, not a Claude Code measurement.",
       "value": "1M (Opus 4.8)",
       "metric": "the context-window specification on the Claude Opus 4.8 model page",
-      "method": "agents/claude-code.md's 基本信息 table and both README matrices carry 1M（Opus 4.8）; the README's source note links the model page.",
-      "repro": "curl -s https://platform.claude.com/docs/en/models/opus-4-8/overview | grep -io '1M\\|context window'",
-      "evidence": "https://platform.claude.com/docs/en/models/opus-4-8/overview",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the context-window row of the captured model page and pairs it with the model named in the snapshot header. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/claude-code.md and both README matrices carry the same window, attributed to the model page.",
+      "repro": "python3 -c \"import re;s=open('docs/snapshots/claude-opus-4-8-model-page-2026-09-14.md',encoding='utf-8').read();print(re.search(r'Context window\\n\\d+M',s).group(0))\"",
+      "evidence": "docs/snapshots/claude-opus-4-8-model-page-2026-09-14.md; agents/claude-code.md 基本信息; README.md matrices",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor model specification, not a figure this repository computes; the model page needs the network and no committed file here pins the window. Corroborated on 2026-09-13 that the figure is the vendor's own published value (the page is the source the README has cited since 2026-09-12)."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/claude-opus-4-8-model-page-2026-09-14.md',encoding='utf-8').read()\ntitle=re.search(r'# Snapshot: (.*?) model page',s).group(1)\nm=re.search(r'Context window\\n(\\d+M)\\ntokens',s)\nprint('%s (%s)' % (m.group(1), title))\"",
+        "expect": {
+          "equals": "1M (Claude Opus 4.8)"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -593,12 +645,16 @@
       "claim": "Claude Code's matrix entry is 88.6% SWE-bench Verified, the vendor score for Opus 4.8 recorded in the Claude Opus 4.8 System Card §8.2 (2026-05-28).",
       "value": "88.6% SWE-bench Verified",
       "metric": "the SWE-bench Verified figure in the vendor system card",
-      "method": "README's Benchmark row, agents/claude-code.md's 基本信息 row and 优势 list all carry 88.6%; the README's source note links the system card and its section.",
-      "repro": "curl -s https://www.anthropic.com/claude-opus-4-8-system-card | grep -o '88.6[^%]*%'",
-      "evidence": "https://www.anthropic.com/claude-opus-4-8-system-card",
-      "verified": "2026-09-13",
+      "method": "The receipt parses the vendor's SWE-bench Verified bullet out of the section 8.2 excerpt captured from the system-card PDF. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. README's Benchmark row, agents/claude-code.md's 基本信息 row and 优势 list all carry 88.6%.",
+      "repro": "grep -A2 'SWE-bench Verified' docs/snapshots/claude-opus-4-8-system-card-2026-09-14.md",
+      "evidence": "docs/snapshots/claude-opus-4-8-system-card-2026-09-14.md (system card §8.2); README.md Benchmark row; agents/claude-code.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor-published benchmark result; running SWE-bench again is neither committed here nor offline, and the system card needs the network. Quoted with its section and date, as the page does."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/claude-opus-4-8-system-card-2026-09-14.md',encoding='utf-8').read()\nv=re.search(r'SWE-bench Verified\\d* is a 500-problem subset.*?achieves ([\\d.]+)%',s,re.S).group(1)\nprint(v + '% SWE-bench Verified')\"",
+        "expect": {
+          "equals": "88.6% SWE-bench Verified"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -607,12 +663,16 @@
       "claim": "Claude Code shipped 2025-02-24 as a limited research preview and reached GA on 2025-05-22, per Anthropic's model announcements.",
       "value": "2025-02-24 preview -> 2025-05-22 GA",
       "metric": "the two announcement dates cited on the Claude Code page",
-      "method": "agents/claude-code.md's 首次发布 row carries both dates with links to the Claude 3.7 Sonnet and Claude 4 announcements.",
-      "repro": "curl -s https://www.anthropic.com/news/claude-4 | grep -io 'claude code[^.]*' | head -3",
-      "evidence": "https://www.anthropic.com/news/claude-3-7-sonnet; https://www.anthropic.com/news/claude-4",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the two announcement dates out of the captured posts (Claude 3.7 Sonnet / Claude Code, then Claude 4's \"Claude Code is now generally available\") and normalises them to ISO. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/claude-code.md's 首次发布 row carries both dates with the same links.",
+      "repro": "grep -n 'Feb 24, 2025\\|May 22, 2025' docs/snapshots/anthropic-claude-code-announcements-2026-09-14.md",
+      "evidence": "docs/snapshots/anthropic-claude-code-announcements-2026-09-14.md; agents/claude-code.md 首次发布 row",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "Vendor announcement dates, external to this repository; re-reading them needs the network and no committed file derives them. Published with both links inline, as CONTRIBUTING.md requires of a vendor figure."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/anthropic-claude-code-announcements-2026-09-14.md',encoding='utf-8').read()\nimport datetime\nd=[datetime.datetime.strptime(m,'%b %d, %Y').date().isoformat() for m in re.findall(r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d+, \\d{4}',s)]\nprint(d[0] + ' preview -> ' + d[1] + ' GA')\"",
+        "expect": {
+          "equals": "2025-02-24 preview -> 2025-05-22 GA"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -621,12 +681,16 @@
       "claim": "The Claude Code tracking incident is recorded with only the dates the sources carry: tracking code from v2.1.91 (no published start date), removal in v2.1.197 on Jul 1-2 2026, and the MIIT NVDB finding on 2026-07-08 - with no blacklist count, because none was published.",
       "value": "v2.1.91 / v2.1.197 (Jul 1-2, 2026) / 2026-07-08",
       "metric": "the version range and dates in the incident write-ups",
-      "method": "agents/claude-code.md's 追踪事件 table and dimensions/security.md's incident section record the same three facts and both say explicitly that the earlier \"147+\" blacklist figure and the \"April 2\" start date were removed for lack of a source.",
-      "repro": "curl -s https://meshlaunch.com/en/blog/2026-claude-code-backdoor-miit-warning.html | grep -o 'v2\\.1\\.[0-9]*' | sort -u",
-      "evidence": "https://meshlaunch.com/en/blog/2026-claude-code-backdoor-miit-warning.html",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the three dates out of the captured incident write-up: the version the tracking code shipped in, the fix version and its Jul 1-2 window, and the NVDB finding. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/claude-code.md's 追踪事件 table and dimensions/security.md's incident section record the same three facts and both state that the 147+ blacklist figure is not published.",
+      "repro": "grep -n 'v2\\.1\\.91\\|v2\\.1\\.197\\|July 8, 2026' docs/snapshots/meshlaunch-claude-code-incident-2026-09-14.md",
+      "evidence": "docs/snapshots/meshlaunch-claude-code-incident-2026-09-14.md; agents/claude-code.md 追踪事件 table; dimensions/security.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "The version numbers and dates come from third-party write-ups and a regulator notice (the NVDB notice itself could not be fetched directly, as the page notes); none of it is committed here and re-reading needs the network. The page's honesty about the missing start date and the deleted 147+ figure is the point of the claim."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/meshlaunch-claude-code-incident-2026-09-14.md',encoding='utf-8').read()\na=re.search(r'v(2\\.1\\.91)',s).group(1)\nb=re.search(r'v(2\\.1\\.197)\\+ \\(Jul (\\d+)–(\\d+), (\\d{4});',s)\nc=re.search(r'On July (\\d+), (\\d{4})',s)\nprint('v%s / v%s (Jul %s-%s, %s) / %s-07-%02d' % (a, b.group(1), b.group(2), b.group(3), b.group(4), c.group(2), int(c.group(1))))\"",
+        "expect": {
+          "equals": "v2.1.91 / v2.1.197 (Jul 1-2, 2026) / 2026-07-08"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -635,12 +699,16 @@
       "claim": "Codex runs with a 400K context window inside Codex and 1M on the API, and OpenAI's announced Terminal-Bench 2.0 score is 82.7% (2026-04-23).",
       "value": "400K (Codex) / 1M (API); 82.7% Terminal-Bench 2.0",
       "metric": "the context window and benchmark figure in OpenAI's GPT-5.5 announcement",
-      "method": "agents/codex.md's 基本信息 rows carry both, each linked to the announcement, and the README's Benchmark row carries the 82.7% with the same source; the page also notes OpenAI published no SWE-bench Verified figure there.",
-      "repro": "curl -s https://openai.com/index/introducing-gpt-5-5/ | grep -io 'terminal-bench[^<]*\\|82.7%'",
-      "evidence": "https://openai.com/index/introducing-gpt-5-5/",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the announcement's two context windows and its Terminal-Bench 2.0 sentence out of the captured snapshot. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/codex.md's 基本信息 rows carry both windows and the README's Benchmark row carries the 82.7%.",
+      "repro": "grep -n 'context window\\|Terminal-Bench 2.0' docs/snapshots/openai-gpt-5-5-announcement-2026-09-14.md",
+      "evidence": "docs/snapshots/openai-gpt-5-5-announcement-2026-09-14.md; agents/codex.md 基本信息; README.md Benchmark row",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor announcement, external to this repository and needing the network to re-read; no committed file derives either figure. Quoted with the date and link, and the pages are explicit that the vendor published no SWE-bench number in it."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/openai-gpt-5-5-announcement-2026-09-14.md',encoding='utf-8').read()\ncodex=re.search(r'with a (\\d+K) context window',s).group(1)\napi=re.search(r'with a (\\d+M) context window',s).group(1)\ntb=re.search(r'Terminal-Bench 2\\.0, which tests.*?accuracy of ([\\d.]+)%',s,re.S).group(1)\nprint('%s (Codex) / %s (API); %s%% Terminal-Bench 2.0' % (codex, api, tb))\"",
+        "expect": {
+          "equals": "400K (Codex) / 1M (API); 82.7% Terminal-Bench 2.0"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -649,12 +717,16 @@
       "claim": "GPT-5.5 output is priced at $30 per million tokens in OpenAI's announcement, which the Codex page cites as the reason long sessions burn cost.",
       "value": "$30 / M output tokens",
       "metric": "the token price in OpenAI's GPT-5.5 announcement",
-      "method": "agents/codex.md's 价格 row and its 劣势 list both carry the figure with the announcement link.",
-      "repro": "curl -s https://openai.com/index/introducing-gpt-5-5/ | grep -o '\\$30[^<]*'",
-      "evidence": "https://openai.com/index/introducing-gpt-5-5/",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the announcement's API price line out of the captured snapshot. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/codex.md's 价格 row and 劣势 list carry the figure with the same link.",
+      "repro": "grep -n 'output tokens' docs/snapshots/openai-gpt-5-5-announcement-2026-09-14.md",
+      "evidence": "docs/snapshots/openai-gpt-5-5-announcement-2026-09-14.md; agents/codex.md 价格 row",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor price, published on the vendor's site and changed at the vendor's discretion; re-reading needs the network and nothing committed here derives it. The page labels price rows as observed tiers, not quotes."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/openai-gpt-5-5-announcement-2026-09-14.md',encoding='utf-8').read()\np=re.search(r'[$](\\d+) per 1M output tokens',s).group(1)\nprint('$' + p + ' / M output tokens')\"",
+        "expect": {
+          "equals": "$30 / M output tokens"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -663,12 +735,16 @@
       "claim": "OpenCode supports 75+ model providers, including local models through Ollama.",
       "value": "75+ providers",
       "metric": "the provider count the OpenCode page and both README matrices publish",
-      "method": "agents/opencode.md's 模型 row and 优势 list carry 75+; the README's Model Lock cell for OpenCode is 75+ providers in both language tables.",
-      "repro": "curl -s https://github.com/anomalyco/opencode#readme | grep -io '75+[^.]*\\|providers'",
-      "evidence": "https://github.com/anomalyco/opencode",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the provider count from the captured OpenCode site. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. The figure is published on opencode.ai; the README the claim previously cited no longer carries it, so the citation is the site.",
+      "repro": "grep -n 'LLM providers' docs/snapshots/opencode-site-2026-09-14.md",
+      "evidence": "docs/snapshots/opencode-site-2026-09-14.md; agents/opencode.md 模型 row; README.md matrices",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "An upstream README figure for a project not committed here; re-reading needs the network. Published on the page as the upstream count."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/opencode-site-2026-09-14.md',encoding='utf-8').read()\nprint(re.search(r'(\\d+)\\+ LLM providers',s).group(1) + '+ providers')\"",
+        "expect": {
+          "equals": "75+ providers"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -677,12 +753,16 @@
       "claim": "Gemini CLI's free tier ended on 2026-06-18, when Google moved Gemini CLI and Gemini Code Assist to the multi-agent Antigravity CLI.",
       "value": "2026-06-18 transition",
       "metric": "the transition announcement's date",
-      "method": "agents/gemini-cli.md's 重大变更 section and the README's Gemini CLI price cell (free tier, then the Antigravity transition) both record it.",
-      "repro": "curl -s https://developers.googleblog.com/en/transitioning-gemini-cli-and-gemini-code-assist-to-antigravity/ | grep -io 'antigravity[^<]*' | head -3",
-      "evidence": "https://developers.googleblog.com/en/transitioning-gemini-cli-and-gemini-code-assist-to-antigravity/",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the cut-off date out of the captured Google announcement (the post is dated May 19, 2026 and names June 18, 2026 as the day Gemini CLI and the IDE extensions stop serving free/Pro/Ultra requests). The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/gemini-cli.md's 重大变更 section records the same date.",
+      "repro": "grep -n 'June 18, 2026' docs/snapshots/google-gemini-cli-transition-2026-09-14.md",
+      "evidence": "docs/snapshots/google-gemini-cli-transition-2026-09-14.md; agents/gemini-cli.md 重大变更; README.md price cell",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor product change with a vendor date, external to this repository; re-reading needs the network and no committed file derives the transition. The page marks the date and notes the free service ended."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/google-gemini-cli-transition-2026-09-14.md',encoding='utf-8').read()\nd=re.findall(r'On June (\\d+), (\\d{4})',s)\nprint('%s-06-%02d transition' % (d[0][1], int(d[0][0])))\"",
+        "expect": {
+          "equals": "2026-06-18 transition"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -691,12 +771,16 @@
       "claim": "GitHub Copilot CLI reached GA on 2026-02-25 and costs $10/month on Copilot Pro, with one premium request consumed per prompt.",
       "value": "GA 2026-02-25; $10/mo; 1 premium request per prompt",
       "metric": "GitHub's GA announcement and Copilot Pro pricing",
-      "method": "agents/copilot-cli.md's GA 日期 and 价格 rows carry both, and the README matrix's Copilot CLI price cell is $10/mo.",
-      "repro": "curl -s https://github.blog/changelog/ | grep -io 'copilot cli[^<]*' | head -3",
-      "evidence": "https://github.com/github/copilot-cli/releases",
-      "verified": "2026-09-13",
+      "method": "The receipt composes three captured sources: the changelog post's date, the Pro plan's price on the Copilot plans page, and the Copilot CLI row of the premium-requests doc. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/copilot-cli.md's GA 日期 and 价格 rows carry the same three facts.",
+      "repro": "grep -n 'February 25, 2026' docs/snapshots/github-copilot-cli-ga-2026-09-14.md; grep -n 'per user / month' docs/snapshots/github-copilot-plans-2026-09-14.md",
+      "evidence": "docs/snapshots/github-copilot-cli-ga-2026-09-14.md; docs/snapshots/github-copilot-plans-2026-09-14.md; docs/snapshots/github-copilot-premium-requests-2026-09-14.md; agents/copilot-cli.md",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "Vendor announcement date and vendor pricing, both external and network-dependent; nothing committed here derives them. Published as observed tiers with the GA date the vendor announced."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/github-copilot-cli-ga-2026-09-14.md',encoding='utf-8').read()\np=open('docs/snapshots/github-copilot-plans-2026-09-14.md',encoding='utf-8').read()\nq=open('docs/snapshots/github-copilot-premium-requests-2026-09-14.md',encoding='utf-8').read()\nimport datetime\nga=datetime.datetime.strptime(re.search(r'([A-Z][a-z]+ \\d+, \\d{4})',s).group(1),'%B %d, %Y').date().isoformat()\nprice=re.search(r'[$]\\n(\\d+)\\nUSD\\nper user / month',p).group(1)\npr='1 premium request per prompt' if re.search(r'Copilot CLI\\nEach prompt to Copilot CLI uses\\none premium request',q) else 'premium-request wording changed'\nprint('GA %s; $%s/mo; %s' % (ga, price, pr))\"",
+        "expect": {
+          "equals": "GA 2026-02-25; $10/mo; 1 premium request per prompt"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -705,12 +789,16 @@
       "claim": "Devin's self-serve plans, announced 2026-04-14, are Free, Pro $20/month, Max $200/month, Teams from $80/month (usage-based) and custom Enterprise.",
       "value": "Free / $20 Pro / $200 Max / from $80 Teams",
       "metric": "Cognition's 2026-04-14 self-serve plan announcement",
-      "method": "agents/devin.md's 价格 row and its 劣势 list both carry the tiers, linked to the Cognition announcement; the README's 成本不透明 note for Devin repeats the same 2026-04 change.",
-      "repro": "curl -s https://cognition.com/blog/new-self-serve-plans-for-devin | grep -io '\\$[0-9]*[^<]*' | head -5",
-      "evidence": "https://cognition.com/blog/new-self-serve-plans-for-devin",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the announcement date and the whole plan lineup out of the captured Cognition post. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/devin.md's 价格 row and 劣势 list carry the same tiers.",
+      "repro": "grep -n 'month, with\\|minimum spend\\|04.14.26' docs/snapshots/cognition-devin-plans-2026-09-14.md",
+      "evidence": "docs/snapshots/cognition-devin-plans-2026-09-14.md; agents/devin.md 价格 row; README.md 成本不透明 note",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "A vendor pricing announcement, external and network-dependent; no committed file derives the tiers and the vendor can change them at any time. The page labels them observed tiers, not quotes."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/cognition-devin-plans-2026-09-14.md',encoding='utf-8').read()\nd=re.search(r'(\\d{2})\\.(\\d{2})\\.(\\d{2})',s)\nm=re.search(r'lineup is:\\nFree\\n— Free\\nPro\\n— [$](\\d+)/month.*?Max\\n— [$](\\d+)/month.*?Teams\\n— Usage based, with a minimum spend of [$](\\d+)/month',s,re.S)\nprint('20%s-%s-%s: Free / $%s Pro / $%s Max / from $%s Teams' % (d.group(3), d.group(1), d.group(2), m.group(1), m.group(2), m.group(3)))\"",
+        "expect": {
+          "equals": "2026-04-14: Free / $20 Pro / $200 Max / from $80 Teams"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -719,12 +807,16 @@
       "claim": "Windsurf was Codeium, Cognition announced an acquisition agreement in 2025-07, and from 2026-06 it is folded into Devin Desktop.",
       "value": "2025-07 agreement; 2026-06 merge",
       "metric": "the two Cognition blog dates cited on the Windsurf page",
-      "method": "agents/windsurf.md's 出品方 row carries both dates with links to Cognition's acquisition post and its one-year review; the README's Windsurf entry says Cognition (formerly Codeium).",
-      "repro": "curl -s https://cognition.com/blog/windsurf | grep -io 'windsurf[^<]*' | head -3",
-      "evidence": "https://cognition.com/blog/windsurf; https://cognition.com/blog/one-year-of-building-together",
-      "verified": "2026-09-13",
+      "method": "The receipt reads the two Cognition post dates out of the captured snapshots - the acquisition post (07.14.25, the signed definitive agreement) and the Devin Desktop launch (06.02.26, into which Windsurf is folded). The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value. agents/windsurf.md's 出品方 row carries both with the same links.",
+      "repro": "grep -n '07.14.25' docs/snapshots/cognition-windsurf-acquisition-2026-09-14.md; grep -n '06.02.26' docs/snapshots/cognition-devin-desktop-2026-09-14.md",
+      "evidence": "docs/snapshots/cognition-windsurf-acquisition-2026-09-14.md; docs/snapshots/cognition-devin-desktop-2026-09-14.md; agents/windsurf.md 出品方 row",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "Corporate dates published by Cognition, external to this repository; re-reading needs the network and no committed file derives them. Both links are inline on the page, as the repository's content standard requires."
+        "cmd": "python3 -c \"import re\ns=open('docs/snapshots/cognition-windsurf-acquisition-2026-09-14.md',encoding='utf-8').read()\nd=open('docs/snapshots/cognition-devin-desktop-2026-09-14.md',encoding='utf-8').read()\na=re.search(r'(\\d{2})\\.(\\d{2})\\.(\\d{2})',s)\nb=re.search(r'(\\d{2})\\.(\\d{2})\\.(\\d{2})',d)\nprint('20%s-%s agreement; 20%s-%s merge' % (a.group(3), a.group(1), b.group(3), b.group(1)))\"",
+        "expect": {
+          "equals": "2025-07 agreement; 2026-06 merge"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     },
@@ -738,7 +830,7 @@
       "evidence": "agents/cursor.md:22,31,56; agents/claude-code.md:27; agents/copilot-cli.md:33; agents/omp.md:14",
       "verified": "2026-09-13",
       "check": {
-        "manual": "No command can settle them: they describe vendor behaviour (how far ahead a completion looks, how large a task an agent handles, how many sub-agents run at once) rather than data in this repository, and the pages cite no upstream source to re-read - which is exactly why they are listed here instead of being dressed up as receipts. The inventory's sourced figures for these same pages are separate claims (for example `star-snapshot-gemini-cli`, `claude-context-and-model`, `omp-upstream-headline-figures`)."
+        "manual": "No command and no snapshot can settle these: they are the four pages' own descriptions of vendor behaviour (how far ahead a completion looks, how large a task an agent handles, how many sub-agents run at once, a UI-update month, a first-release month), written as ranges rather than as measured or vendor-published figures - and, as the claim's point, none of the four pages carries a source URL for them. Missing artifact: an upstream statement or measurement behind each range; until one exists there is no file to capture and no number for a receipt to parse, which is why these are listed here instead of being dressed up as receipts. The inventory's sourced figures for the same pages are separate claims (e.g. `star-snapshot-gemini-cli`, `claude-context-and-model`, `omp-upstream-headline-figures`)."
       },
       "as_of": "2026-09-12"
     },
@@ -752,7 +844,7 @@
       "evidence": "README.md Terminal CLI Comparison Price row; agents/*.md 价格 rows",
       "verified": "2026-09-13",
       "check": {
-        "manual": "Vendor pricing, by definition outside this repository and changing on the vendors' schedule; a check cannot pin it offline, and the pages already label the rows as observed tiers. Machine-checking would freeze vendor prices, which is the drift the claim is warning about - hence manual, with the vendor links inline on the pages."
+        "manual": "Vendored prices across eight CLI cells plus the IDE/platform pages. Two of the cells and one rule are now captures used by other claims (Copilot Pro $10/mo, Devin's $20/$200/$80 lineup, the Copilot CLI premium-request row), but the whole Price row cannot be captured from this workstation: Windsurf's pricing page answers HTTP 429 (rate limited) here, Anthropic's and OpenAI's plan pages render their tiers client-side and need a browser per vendor, and the claim's second half - free bring-your-own-key for omp, Hermes, Aider, OpenCode and Cline - asserts the absence of a price, which no snapshot can carry. Missing artifact: a per-vendor point-in-time capture for each paid cell (and a negative-statement form this checker does not have); the pages already label the rows as observed tiers with the vendor links inline."
       },
       "as_of": "2026-09-12"
     },
@@ -766,7 +858,7 @@
       "evidence": "benchmarks/README.md (Benchmark 1-4 expected tables); README.md \"When NOT to use it\"; llms-full.txt",
       "verified": "2026-09-13",
       "check": {
-        "manual": "No command can produce these figures because nothing was ever run: the search table's omp column needs a live omp session (search-bench.sh says so in its own output), the token table needs a model, and the parallelism table needs a harness. They are hypotheses for the runnable scripts beside them, and the pages say so. `bench-expected-labels` machine-checks that the tables keep that label."
+        "manual": "No command can produce these figures because nothing was ever run: the search table's omp column needs a live omp session (search-bench.sh prints that itself), the token table needs a model, and the parallelism tables need a harness. Missing artifact: any run's output - the repository publishes no measured number of its own, so there is nothing to snapshot. They are hypotheses written before the run, and the pages say so; `bench-expected-labels` machine-checks that the tables keep the 预期结果 label."
       },
       "as_of": "2026-09-12"
     },
@@ -775,12 +867,16 @@
       "claim": "Hermes' earliest GitHub release tag is v2026.3.12 (2026-03-12), its current version on the page is v0.20.6 (2026-08-27), and the earliest PyPI publication is 0.13.0 on 2026-05-14.",
       "value": "v2026.3.12 / v0.20.6 / 0.13.0",
       "metric": "the release tags, the current release and the PyPI history of hermes-agent",
-      "method": "agents/hermes.md's 首个 Release and 当前版本 rows carry all three with links to the releases page.",
-      "repro": "curl -s https://api.github.com/repos/NousResearch/hermes-agent/releases | grep -o '\"tag_name\": \"[^\"]*\"' | tail -3",
-      "evidence": "https://github.com/NousResearch/hermes-agent/releases",
-      "verified": "2026-09-13",
+      "method": "The receipt composes three captured registries: the earliest tag in the GitHub releases listing (the list is newest-first, so the last entry is the earliest), the npm publish time of v0.20.6 - the version the page's 当前版本 row carries, whose linked tag v2026.8.27 is the same day - and the earliest upload on PyPI. The check reads a committed snapshot under `docs/snapshots/` - a point-in-time capture of the upstream source fetched 2026-09-14, with its URL and fetch date in the file header. Freshness is not checked: the receipt proves the number this repository publishes is the number the source carried when captured, and it fails if the snapshot is edited to a different value.",
+      "repro": "python3 -c \"import json;g=json.load(open('docs/snapshots/hermes-releases-2026-09-14.json'));print(g['releases'][-1])\"",
+      "evidence": "docs/snapshots/hermes-releases-2026-09-14.json; docs/snapshots/hermes-npm-2026-09-14.json; docs/snapshots/hermes-pypi-2026-09-14.json; agents/hermes.md 首个 Release / 当前版本 rows",
+      "verified": "2026-09-14",
       "check": {
-        "manual": "Release history of an upstream project: it changes with every release (this is the drift the page warns about) and re-reading needs the network. No committed file here derives the tags or the PyPI dates."
+        "cmd": "python3 -c \"import json\ng=json.load(open('docs/snapshots/hermes-releases-2026-09-14.json',encoding='utf-8'))\nn=json.load(open('docs/snapshots/hermes-npm-2026-09-14.json',encoding='utf-8'))\np=json.load(open('docs/snapshots/hermes-pypi-2026-09-14.json',encoding='utf-8'))\nfirst=g['releases'][-1]\nver='0.20.6'\npypi=sorted(p['releases'], key=lambda k: p['releases'][k])[0]\nprint('%s (%s) / v%s (%s) / %s (%s)' % (first['tag_name'], first['published_at'][:10], ver, n['time'][ver][:10], pypi, p['releases'][pypi][:10]))\"",
+        "expect": {
+          "equals": "v2026.3.12 (2026-03-12) / v0.20.6 (2026-08-27) / 0.13.0 (2026-05-14)"
+        },
+        "timeout": 60
       },
       "as_of": "2026-09-12"
     }
