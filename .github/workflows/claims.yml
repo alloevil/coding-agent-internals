@@ -1,0 +1,27 @@
+name: claims
+
+# Runs the receipts behind claims.json: every number this catalogue publishes in prose — the twelve agent
+# pages and five dimension pages its badges and JSON-LD count, the shape of those pages, the two benchmark
+# helpers, and the star snapshots the profiles pin — must still be produced by the command next to it.
+# Weekly as well as on push, because a figure can go stale without anyone committing anything: a star count
+# or an agent page's reading date moves while the repository stands still.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: published numbers still reproduce
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # No install step. The checks read committed files with python3 and git — both on the runner — and run
+      # the two shell benchmark helpers, which fall back to grep when rg is absent and use a temp directory,
+      # so nothing is fetched and no dependency is installed. search-bench.sh skips cleanly when its default
+      # target (./tc39-signals) is missing, which is exactly the state of a fresh checkout.
+      - uses: alloevil/verify-claims@v0.1.0

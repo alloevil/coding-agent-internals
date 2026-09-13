@@ -1,0 +1,788 @@
+{
+  "$comment": "Executable receipts for the numbers coding-agent-internals publishes in prose - the page and table counts on the README's first screen and in index.html's JSON-LD, the shape of the twelve agent pages, the benchmark helper scripts, and the star snapshots the pages pin. Every figure that can be recomputed from committed data carries a `check.cmd`; every figure quoted from an upstream project carries `check.manual` with the upstream URL in the reason, because no file in this repository derives it and a check must run offline. Run with `python3 -m verify_claims --root . run`; CI runs it via .github/workflows/claims.yml. Note what this file is not: the benchmark result tables stay 预期结果 (hypotheses, not measurements) and are listed under `benchmark-expected-results` as manual - nothing here claims a measured number of this project's own.",
+  "project": "coding-agent-internals",
+  "repository": "https://github.com/alloevil/coding-agent-internals",
+  "updated": "2026-09-13",
+  "claims": [
+    {
+      "id": "agents-page-count",
+      "claim": "Twelve agents get a profile page - the count the README badge, the README FAQ, index.html's JSON-LD and the sitemap all publish.",
+      "value": "12",
+      "metric": "files in agents/*.md",
+      "method": "Ten of the twelve pages are the eight terminal CLIs of the main matrix plus Cursor and Windsurf; Cline and Devin complete the set. The same twelve names appear in the README's Agent Cards table, in index.html's agent grid and as SoftwareApplication entries in its JSON-LD.",
+      "repro": "ls agents/*.md | wc -l",
+      "evidence": "agents/*.md; README.md badge `Agents-12`; index.html JSON-LD",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "ls agents/*.md | wc -l",
+        "expect": {
+          "equals": "12"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "dimensions-page-count",
+      "claim": "Five implementation dimensions get a page - search, editing, memory, security, sub-agents.",
+      "value": "5",
+      "metric": "files in dimensions/*.md",
+      "method": "Each dimension page is named in the README's Deep Dives table, in llms.txt's Docs list and in the sitemap; index.html's JSON-LD lists the same five as variableMeasured.",
+      "repro": "ls dimensions/*.md | wc -l",
+      "evidence": "dimensions/*.md; README.md badge `Dimensions-5`; index.html JSON-LD variableMeasured",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "ls dimensions/*.md | wc -l",
+        "expect": {
+          "equals": "5"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "dimension-level-counts",
+      "claim": "The dimension pages carry the mechanism levels the catalogue publishes: three Level headings each in search, editing and security, four sub-agent patterns (A-D), and the memory page's four states - the three published levels plus the 中间态 compaction middle state.",
+      "value": "3 / 3 / 3 / 4 / 4",
+      "metric": "section headings of the five dimension pages",
+      "method": "The README's Key Findings blocks and llms.txt both summarise these pages as \"three levels\" (search, editing, security), memory as three levels with a compaction middle state, and sub-agents as \"four patterns\" (模式 A-D). The check counts the headings rather than the prose, so a page that loses or gains a level fails.",
+      "repro": "grep -c '^### Level ' dimensions/search.md dimensions/editing.md dimensions/security.md",
+      "evidence": "dimensions/*.md; README.md Key Findings; llms.txt Docs list",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"import re\ndef heads(p,pat):\n    return len([l for l in open(p,encoding='utf-8') if re.match(pat,l)])\nprint('search levels:',heads('dimensions/search.md','### Level [0-9]'),'editing levels:',heads('dimensions/editing.md','### Level [0-9]'),'security levels:',heads('dimensions/security.md','### Level [0-9]'),'memory tiers:',heads('dimensions/memory.md','### '),'subagent patterns:',heads('dimensions/subagents.md','### 模式 '))\"",
+        "expect": {
+          "equals": "search levels: 3 editing levels: 3 security levels: 3 memory tiers: 4 subagent patterns: 4"
+        },
+        "timeout": 60,
+        "note": "memory reports 4 because the page adds the 中间态 compaction state to the three levels the README's Key Findings block names; the sub-agent count is 4 on both surfaces"
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "sitemap-pages",
+      "claim": "sitemap.xml parses and lists 18 URLs - the site root, the five dimension pages and the twelve agent pages - each resolving to a committed .md page.",
+      "value": "18 URLs",
+      "metric": "loc entries in sitemap.xml vs the committed page files",
+      "method": "The sitemap lists the .html rendered form; every slug it names is checked against the committed agents/ and dimensions/ Markdown, so a page cannot be dropped or renamed without the sitemap failing. Parsing the file also proves it is well-formed XML, which is one of this repository's two structural gates.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "sitemap.xml; agents/; dimensions/",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"import os,xml.etree.ElementTree as ET\nns='{http://www.sitemaps.org/schemas/sitemap/0.9}'\nbase='https://alloevil.github.io/coding-agent-internals/'\nlocs=[e.text for e in ET.parse('sitemap.xml').iter(ns+'loc')]\nmd=lambda u: u[len(base):].replace('.html','.md')\nmissing=[u for u in locs if u!=base and not os.path.exists(md(u))]\nslugs=sorted(md(u) for u in locs if u!=base)\nfiles=sorted('agents/'+f for f in os.listdir('agents'))+sorted('dimensions/'+f for f in os.listdir('dimensions'))\nprint(len(locs),'urls; missing:',(','.join(missing) or 'none'),'; slugs match committed pages:',slugs==files)\"",
+        "expect": {
+          "equals": "18 urls; missing: none ; slugs match committed pages: True"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "index-jsonld",
+      "claim": "index.html's JSON-LD parses and describes the published catalogue: a Dataset, 12 agents in `about`, 5 dimensions in `variableMeasured`, dateModified 2026-09-12 - and the visible page carries 12 agent cards.",
+      "value": "Dataset / 12 / 5 / 2026-09-12 / 12 cards",
+      "metric": "the application/ld+json block and the agent-card grid of index.html",
+      "method": "The JSON-LD is the machine-readable form of the page's own numbers, so a JSON syntax error or a count that drifts from agents/ and dimensions/ fails here. This is the second of the repository's two structural gates.",
+      "repro": "python3 -c \"import json; s=open('index.html').read(); d=json.loads(s.split('application/ld+json')[1].split('>',1)[1].split('</script>')[0]); print(d['@type'], len(d['about']), len(d['variableMeasured']), d['dateModified'])\"",
+      "evidence": "index.html (JSON-LD `about` / `variableMeasured`, agent-card grid)",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"import json\ns=open('index.html',encoding='utf-8').read()\nd=json.loads(s.split('application/ld+json')[1].split('>',1)[1].split('</script>')[0])\nprint(d['@type'],len(d['about']),len(d['variableMeasured']),d['dateModified'],'cards='+str(s.count('class='+chr(34)+'agent-card'+chr(34))))\"",
+        "expect": {
+          "equals": "Dataset 12 5 2026-09-12 cards=12"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "readme-badges",
+      "claim": "The README's first-screen badges publish Agents 12, Dimensions 5, Year 2026, License MIT and Last Updated Sep 12 - the same counts the page tree yields.",
+      "value": "Agents:12 / Dimensions:5 / Year:2026 / License:MIT / Last Updated:Sep 12",
+      "metric": "the shields.io badge URLs in README.md",
+      "method": "The badge block is the first screen of the README, so its five figures are the most-quoted numbers in the repository. The numbers in them are asserted separately by `agents-page-count` and `dimensions-page-count`; this receipt pins the badge text itself so a reworded badge fails rather than silently disagreeing with the tree.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "README.md badge block (lines 15-21)",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"import re\nt=open('README.md',encoding='utf-8').read()\nb=re.findall(r'badge/([^?\\\"]+)\\?',t)\nprint(' '.join(x.split('-')[0].replace('%20',' ')+':'+x.split('-')[1].replace('%20',' ') for x in b))\"",
+        "expect": {
+          "equals": "Agents:12 Dimensions:5 Year:2026 License:MIT Last Updated:Sep 12 AI IDE:blue AI IDE:blue Standalone:gray"
+        },
+        "timeout": 60,
+        "note": "the three trailing labels are the decorative AI IDE / Standalone badges on the README's agent cards, which carry no figure"
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "agent-page-tables",
+      "claim": "All twelve agent pages open with the shared 基本信息 table (`| 项 | 值 |`); ten of them also carry the shared 工具实现 table (`| 维度 | 实现方式 | 层级 |`) - omp and Hermes, the two longest pages, replace it with their own sections.",
+      "value": "12 / 12 / 10",
+      "metric": "the two repeated table headers across agents/*.md",
+      "method": "The catalogue's contribution rule (CONTRIBUTING.md: \"参考现有 agent 文件格式\") means a new profile must carry the same two tables. The check counts pages per header and names the two pages that legitimately do not carry the tool table, so a page edited into a different shape is reported by name instead of passing silently.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "agents/*.md; CONTRIBUTING.md (\"补充新 Agent\")",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"import glob\nf=sorted(glob.glob('agents/*.md'))\ntxt={p:open(p,encoding='utf-8').read() for p in f}\nb=[p for p in f if '\\n| 项 | 值 |' in txt[p]]\nw=[p for p in f if '\\n| 维度 | 实现方式 | 层级 |' in txt[p]]\nprint(len(f),'pages;',len(b),'basic table;',len(w),'tool table; without tool table:',','.join(p.split('/')[-1] for p in f if p not in w))\"",
+        "expect": {
+          "equals": "12 pages; 12 basic table; 10 tool table; without tool table: hermes.md,omp.md"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "star-snapshot-consistency",
+      "claim": "The three star figures the site prints are the snapshots the agent pages pin: index.html's cards show 30.7K / 244.5K / 107K, exactly the rounded 30,667 / 244,530 / 106,920 the omp, Hermes and Gemini CLI pages record as a 2026-09-12 GitHub API reading, and the page footer carries the same date.",
+      "value": "30.7K / 244.5K / 107K",
+      "metric": "the `Stars` row of the three agent pages vs the agent-card labels and footer of index.html",
+      "method": "Each agent page pins its precise count and read date; index.html abbreviates them. The check re-does the abbreviation (within 0.1K) and requires the same date in the footer, so the two surfaces can no longer disagree about one snapshot. Whether that snapshot still matches the live repository is a separate, manual claim per agent.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "agents/omp.md, agents/hermes.md, agents/gemini-cli.md (Stars rows); index.html (agent cards, footer)",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"import re\nidx=open('index.html',encoding='utf-8').read()\nfoot=re.search(r'Last updated: (\\d{4}-\\d\\d-\\d\\d)',idx).group(1)\nout=[]\nfor p in ('agents/omp.md','agents/hermes.md','agents/gemini-cli.md'):\n    t=open(p,encoding='utf-8').read()\n    m=re.search(r'Stars \\| ([\\d.]+)K（([\\d,]+)，(\\d{4}-\\d\\d-\\d\\d)',t)\n    k,n,d=m.groups()\n    ok=(k+'K ⭐') in idx and abs(round(int(n.replace(',',''))/1000,1)-float(k))<=0.11 and d==foot\n    out.append(p.split('/')[-1]+'='+k+'K('+n+','+d+')'+(' pinned' if ok else ' MISMATCH'))\nprint('; '.join(out)+'; footer '+foot)\"",
+        "expect": {
+          "equals": "omp.md=30.7K(30,667,2026-09-12) pinned; hermes.md=244.5K(244,530,2026-09-12) pinned; gemini-cli.md=107K(106,920,2026-09-12) pinned; footer 2026-09-12"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "bench-committed-modes",
+      "claim": "Both benchmark helpers are committed executable, so the quick start's `./edit-bench.sh` and `./search-bench.sh` work in a fresh clone.",
+      "value": "100755",
+      "metric": "the git index mode of benchmarks/edit-bench.sh and benchmarks/search-bench.sh",
+      "method": "Read from the committed index rather than from the checked-out file, because the working-tree mode depends on the developer's umask while the mode a clone receives is what the README's `./...` invocations need.",
+      "repro": "git ls-files -s benchmarks/*.sh",
+      "evidence": "benchmarks/edit-bench.sh; benchmarks/search-bench.sh; README.md Install",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "git ls-files -s benchmarks/edit-bench.sh benchmarks/search-bench.sh | cut -d' ' -f1 | tr '\\n' ' '",
+        "expect": {
+          "equals": "100755 100755"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "search-bench-flags",
+      "claim": "search-bench.sh takes the two documented positional arguments - a target directory and a search term - and runs offline: given a local directory it measures a cold search and ten consecutive searches for both a fixed string and a regex, using rg when present and falling back to grep.",
+      "value": "2 positional args, 20 searches",
+      "metric": "the argument handling and report of benchmarks/search-bench.sh",
+      "method": "The check feeds a one-file temp directory as `$1` and `useSyncExternalStore` as `$2`, exactly the README's `./search-bench.sh tc39-signals useSyncExternalStore`, and asserts the report names that directory's file count and that term. It is the runnable half of the benchmarks/README quick start; the omp in-process column has no shell entry point and the script says so.",
+      "repro": "cd benchmarks && ./search-bench.sh <dir> <term>",
+      "evidence": "benchmarks/search-bench.sh; benchmarks/README.md 快速开始",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "T=$(mktemp -d) && printf 'const x = 1; // useSyncExternalStore probe\n' > \"$T/a.ts\" && cd benchmarks && ./search-bench.sh \"$T\" useSyncExternalStore; rc=$?; rm -rf \"$T\"; exit $rc",
+        "expect": {
+          "contains": [
+            "固定字符串搜索（useSyncExternalStore）",
+            "正则搜索",
+            "10 次连续",
+            "注: 以上是 shell fork 的开销基线",
+            "（1 个文件）"
+          ]
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "search-bench-default",
+      "claim": "With no arguments search-bench.sh targets ./tc39-signals and skips cleanly, printing the clone command, when that directory is absent - so a clean checkout runs it without network or a large repository.",
+      "value": "skips with the clone hint, exit 0",
+      "metric": "the default-argument branch of benchmarks/search-bench.sh",
+      "method": "The README's quick start clones tc39-proposal-signals first; the check runs the script in the checkout where that clone does not exist, which is also the state of CI. A green exit proves a bare runner needs neither the clone nor rg.",
+      "repro": "cd benchmarks && ./search-bench.sh",
+      "evidence": "benchmarks/search-bench.sh; benchmarks/README.md 快速开始",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "cd benchmarks && ./search-bench.sh",
+        "expect": {
+          "contains": [
+            "跳过: 目标目录不存在: ./tc39-signals",
+            "git clone --depth 1 https://github.com/nicolo-ribaudo/tc39-proposal-signals tc39-signals"
+          ]
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "edit-bench-cases",
+      "claim": "edit-bench.sh reproduces the three plain-text failure modes the catalogue names - whitespace mismatch, stale buffer silently overwriting an external change, and a non-unique match - the same three the editing dimension page documents.",
+      "value": "3 cases",
+      "metric": "the case blocks and assertions of benchmarks/edit-bench.sh",
+      "method": "dimensions/editing.md lists the three failure modes and benchmarks/README.md says all three cases live in this one script. The check runs the script and asserts each case's own verdict line, so the failure-mode table and its runnable reproduction cannot drift apart.",
+      "repro": "cd benchmarks && ./edit-bench.sh",
+      "evidence": "benchmarks/edit-bench.sh; dimensions/editing.md; benchmarks/README.md Benchmark 2",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "cd benchmarks && ./edit-bench.sh",
+        "expect": {
+          "contains": [
+            "=== 用例 1: Whitespace 不匹配 ===",
+            "❌ 纯文本替换：匹配失败（whitespace 不匹配）",
+            "⚠️  纯文本替换：在旧副本上替换并整份写回",
+            "外部新增的 extra() 已被静默覆盖",
+            "\"return null\" 出现次数: 3",
+            "测试完成"
+          ]
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "bench-expected-labels",
+      "claim": "The benchmark result tables are labelled 预期结果 (expected results), not measurements, and search-bench.sh states in its own output that the omp in-process column is not measured by the script.",
+      "value": "2 labels / 1 disclaimer",
+      "metric": "预期结果 headers in benchmarks/README.md and the not-measured note in search-bench.sh",
+      "method": "This is the receipt behind the scope section's promise that the repository publishes no measured numbers of its own: the tables say 预期结果 twice (the search and sub-agent benchmarks) and the script prints the omp disclaimer. The expected figures themselves are listed as manual under `benchmark-expected-results`.",
+      "repro": "grep -c '预期结果' benchmarks/README.md",
+      "evidence": "benchmarks/README.md; benchmarks/search-bench.sh",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "grep -c '预期结果' benchmarks/README.md && grep -c '本脚本不测量' benchmarks/search-bench.sh",
+        "expect": {
+          "equals": "2\n1"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "readme-cli-matrix",
+      "claim": "The terminal-CLI matrix compares eight agents with a column each - Claude Code, Codex, omp, Hermes, Aider, OpenCode, Gemini CLI and Copilot CLI - the eight llms-full.txt calls the eight terminal CLIs.",
+      "value": "8 columns",
+      "metric": "the header row of the README's Terminal CLI Comparison table",
+      "method": "The column list is the repository's scope statement at its most quoted point: the four IDE/platform entries (Cursor, Windsurf, Cline, Devin) are deliberately outside it, and the README FAQ says so. The check prints the names as well as the count, so renaming or reordering a column is visible in the failure.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "README.md Terminal CLI Comparison header; llms-full.txt FAQ",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"l=[x for x in open('README.md',encoding='utf-8') if x.startswith('| Dim |')][0]\nc=[x.strip() for x in l.strip().strip('|').split('|')]\nprint(len(c)-1,'/'.join(c[1:]))\"",
+        "expect": {
+          "equals": "8 Claude Code/Codex/omp/Hermes/Aider/OpenCode/Gemini CLI/Copilot CLI"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "readme-benchmark-row",
+      "claim": "The matrix's Benchmark row carries exactly two figures - Claude Code 88.6% SWE-bench Verified and Codex 82.7% Terminal-Bench 2.0 - and an em dash for the other six CLIs.",
+      "value": "2 figures / 6 dashes",
+      "metric": "the Benchmark row of the README's Terminal CLI Comparison table",
+      "method": "The count of non-dash cells is what makes the row's claim checkable: both figures are vendor-published, plus a third would have to cite a source, so a filled-in cell is a decision the page has to justify. The two figures' upstream receipts are separate manual claims.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "README.md Benchmark row; llms-full.txt Verifiable claims row 8",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"l=[x for x in open('README.md',encoding='utf-8') if x.startswith('| Benchmark |')][0]\nc=[x.strip() for x in l.strip().strip('|').split('|')]\nprint('|'.join(c[1:]),'figures='+str(sum(1 for x in c[1:] if x!='—')))\"",
+        "expect": {
+          "equals": "88.6% SWE-bench Verified|82.7% Terminal-Bench 2.0|—|—|—|—|—|— figures=2"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "as-of-consistency",
+      "claim": "Every surface that states a reading date states 2026-09-12 - eight of them - and no page carries a different September 2026 date, so the catalogue's \"as of\" is one date rather than a per-page drift.",
+      "value": "8 surfaces / 2026-09-12",
+      "metric": "the as-of date across README, index.html, llms.txt, llms-full.txt and the agent and dimension pages",
+      "method": "README, index.html's JSON-LD dateModified and footer, llms.txt, llms-full.txt, the omp, Hermes and Gemini CLI pages and dimensions/search.md each carry the date; the check also scans for any other 2026-09-* token, which would be a half-updated reading. claims.json's own `updated` field is the audit date, not a reading date, and is deliberately outside the scan.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "README.md; index.html; llms.txt; llms-full.txt; agents/omp.md; agents/hermes.md; agents/gemini-cli.md; dimensions/search.md",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"import glob,re\nfs=['README.md','index.html','llms.txt','llms-full.txt']+sorted(glob.glob('agents/*.md'))+sorted(glob.glob('dimensions/*.md'))\nd='2026-09-12'\nhas=[p for p in fs if d in open(p,encoding='utf-8').read()]\nother=sorted({m for p in fs for m in re.findall(r'2026-09-\\d\\d',open(p,encoding='utf-8').read())}-{d})\nprint('as-of surfaces:',len(has),'; other 2026-09 dates:',(other or 'none'))\"",
+        "expect": {
+          "equals": "as-of surfaces: 8 ; other 2026-09 dates: none"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "lsp-dap-crosspage",
+      "claim": "The 14 LSP operations and 28 DAP operations belong to omp alone: they appear in one cell each of the matrix - the omp column - and are restated on the omp page, while no other CLI column claims an op count.",
+      "value": "14 ops / 28 ops, one cell each",
+      "metric": "the LSP and DAP rows of the README matrix and the omp page's headings",
+      "method": "This is the repository-recomputable half of llms-full.txt's claim that \"only omp exposes a full LSP surface (14 operations) and a DAP debugger (28 operations)\": the check counts the cells that carry the numbers rather than trusting the prose. The figures' upstream source is the separate manual claim `omp-upstream-headline-figures`.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "README.md LSP and DAP rows; agents/omp.md §3-§4; llms-full.txt Verifiable claims row 7",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"r=open('README.md',encoding='utf-8').read()\nlsp=[x for x in r.splitlines() if x.startswith('| LSP |')][0]\ndap=[x for x in r.splitlines() if x.startswith('| DAP |')][0]\no=open('agents/omp.md',encoding='utf-8').read()\nprint('LSP 14-ops cells:',lsp.count('14 ops'),'DAP 28-ops cells:',dap.count('28 ops'),'omp.md:',o.count('14 种操作'),o.count('28 种操作'))\"",
+        "expect": {
+          "equals": "LSP 14-ops cells: 1 DAP 28-ops cells: 1 omp.md: 1 1"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "llms-txt-structure",
+      "claim": "llms.txt lists the five dimension pages under Docs and the twelve agent profiles under Agent profiles - its two section lists match the page tree.",
+      "value": "docs=5, agents=12",
+      "metric": "the bullet lists in llms.txt's Docs and Agent profiles sections",
+      "method": "llms.txt is the surface an LLM reads first, so its two lists are a published inventory. The check counts them per section - a page added to agents/ without a line here fails.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "llms.txt Docs and Agent profiles sections",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"t=open('llms.txt',encoding='utf-8').read()\nsec=lambda n:[l for l in t.split('## '+n)[1].split('## ')[0].splitlines() if l.startswith('- [')]\nprint('docs='+str(len(sec('Docs'))),'agents='+str(len(sec('Agent profiles'))))\"",
+        "expect": {
+          "equals": "docs=5 agents=12"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "llms-full-claims-table",
+      "claim": "llms-full.txt's \"Verifiable claims\" section lists eight claim families, each with its evidence page in this repository.",
+      "value": "8 rows",
+      "metric": "table rows of the Verifiable claims section in llms-full.txt",
+      "method": "That table is the prose twin of this file: eight claims, each naming how it is verified and which page develops it. The check pins the row count, so a claim family cannot be dropped from the machine-readable llms-full.txt surface without the table changing.",
+      "repro": "python3 -c \"...\" (see cmd)",
+      "evidence": "llms-full.txt Verifiable claims",
+      "verified": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c \"t=open('llms-full.txt',encoding='utf-8').read()\ns=t.split('## Verifiable claims')[1].split('## When to use')[0]\nprint('claim rows:',sum(1 for l in s.splitlines() if l.startswith('| ') and not l.startswith('|---') and not l.startswith('| Claim')))\"",
+        "expect": {
+          "equals": "claim rows: 8"
+        },
+        "timeout": 60
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "omp-upstream-headline-figures",
+      "claim": "omp publishes 60+ model providers, 31 built-in tools, 14 LSP operations, 28 DAP operations and ~80k lines of Rust core - the figures the README matrix, agents/omp.md, index.html and dimensions/search.md all quote.",
+      "value": "60+ / 31 / 14 / 28 / ~80k",
+      "metric": "the headline counts on the upstream oh-my-pi README (providers, built-in tools, LSP ops, DAP ops, Rust lines)",
+      "method": "The upstream README's headline line reads `**60+** providers · **31** built-in tools · **14** lsp ops · **28** dap ops · **~80k** lines of Rust core.` agents/omp.md copies that line verbatim under its 基本信息 table with the read date 2026-09-12, and both README matrices carry the 60+ providers cell from it.",
+      "repro": "curl -s https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md | sed -n '27p'",
+      "evidence": "https://github.com/can1357/oh-my-pi#readme",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "The counts are published by the upstream project: no committed file in this repository derives them, and re-reading them needs network access to github.com, which a claim check must not require. Corroborated on 2026-09-13 by fetching the upstream README, where line 27 still reads exactly those five figures. The part this repository can recompute - that its pages quote one consistent set of LSP/DAP figures - is `lsp-dap-crosspage`."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "omp-crate-line-table",
+      "claim": "The omp page's four-layer architecture quotes the upstream per-crate Rust line counts: pi-shell 38,000, pi-natives 25,000, pi-walker 5,200, pi-iso 3,300, pi-ast 2,900, pi-voice 1,000.",
+      "value": "38,000 / 25,000 / 5,200 / 3,300 / 2,900 / 1,000",
+      "metric": "the \"Per crate, code lines only\" table of the upstream oh-my-pi README",
+      "method": "agents/omp.md reproduces all six rows with the crate names; dimensions/search.md quotes two of them (pi-shell 38,000 for the embedded shell, pi-natives' grep module for in-process search).",
+      "repro": "curl -s https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md | grep -n '38,000'",
+      "evidence": "https://github.com/can1357/oh-my-pi#readme",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "An upstream table, not a local measurement: the line counts describe the oh-my-pi source tree, which is not committed here, and reading them needs network access to the oh-my-pi repository. Corroborated on 2026-09-13 (the six rows are unchanged)."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "omp-module-line-table",
+      "claim": "The omp page's pi-natives module breakdown quotes the upstream per-module line counts: grep 3,280, text 2,070, keys 1,740, ast 1,510, pty 630, highlight 550.",
+      "value": "3,280 / 2,070 / 1,740 / 1,510 / 630 / 550",
+      "metric": "the pi-natives module table of the upstream oh-my-pi README",
+      "method": "agents/omp.md lists the six modules the search and code-intelligence dimensions care about; dimensions/search.md quotes grep 3,280 as the code size of the in-process engine.",
+      "repro": "curl -s https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md | grep -n '3,280'",
+      "evidence": "https://github.com/can1357/oh-my-pi#readme",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "An upstream table (23 modules upstream; the page quotes six), not derivable from anything committed here - re-reading it needs network access to the oh-my-pi repository. Corroborated on 2026-09-13."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "omp-hashline-token-reduction",
+      "claim": "omp's hash-anchored editing claims a 61% output-token reduction: the upstream README's comparison row reads `Grok 4 Fast | -61% tokens`, and its Hashline section says Grok 4 Fast spends 61% fewer output tokens on the same work.",
+      "value": "-61% output tokens",
+      "metric": "the upstream README's harness-comparison table row and its Hashline section",
+      "method": "agents/omp.md and dimensions/editing.md both carry the figure, and both label it a vendor self-report (厂商自报，非本仓库实测), which is this repository's own hedge on it.",
+      "repro": "curl -s https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md | grep -n '61%'",
+      "evidence": "https://github.com/can1357/oh-my-pi#readme",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor-published measurement, not this repository's: reproducing it would mean re-running the vendor's edit benchmark against its model, which is neither committed here nor offline. The pages mark it vendor-reported; corroborated on 2026-09-13 (README line 119 and section 11 both carry 61%)."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "star-snapshot-omp",
+      "claim": "The omp profile page pins 30,667 stars as its 2026-09-12 GitHub API reading, and index.html's agent card prints that snapshot as 30.7K.",
+      "value": "30,667 at 2026-09-12 (shown as 30.7K)",
+      "metric": "the omp repository's stargazers_count at the pinned reading",
+      "method": "The page's Stars row is `30.7K（30,667，2026-09-12 GitHub API）`; index.html's agent card abbreviates the same snapshot and the footer repeats the date. The site-vs-page half is machine-checked by `star-snapshot-consistency`; only the live value needs the network.",
+      "repro": "curl -s https://api.github.com/repos/can1357/oh-my-pi | grep stargazers_count",
+      "evidence": "https://api.github.com/repos/can1357/oh-my-pi",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A live GitHub figure that moves continuously - 30,667 at the 2026-09-12 reading, 30,863 when re-read on 2026-09-13 - and reading it needs api.github.com, which a claim check must not require. The reason the pages print a precise count and date is exactly this: the number is a snapshot, and no committed file here derives it."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "star-snapshot-hermes",
+      "claim": "The Hermes Agent profile page pins 244,530 stars as its 2026-09-12 GitHub API reading, and index.html's agent card prints that snapshot as 244.5K.",
+      "value": "244,530 at 2026-09-12 (shown as 244.5K)",
+      "metric": "the Hermes Agent repository's stargazers_count at the pinned reading",
+      "method": "The page's Stars row is `244.5K（244,530，2026-09-12 GitHub API）`; index.html's agent card abbreviates the same snapshot and the footer repeats the date. The site-vs-page half is machine-checked by `star-snapshot-consistency`; only the live value needs the network.",
+      "repro": "curl -s https://api.github.com/repos/NousResearch/hermes-agent | grep stargazers_count",
+      "evidence": "https://api.github.com/repos/NousResearch/hermes-agent",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A live GitHub figure that moves continuously - 244,530 at the 2026-09-12 reading, 244,938 when re-read on 2026-09-13 - and reading it needs api.github.com, which a claim check must not require. The reason the pages print a precise count and date is exactly this: the number is a snapshot, and no committed file here derives it."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "star-snapshot-gemini-cli",
+      "claim": "The Gemini CLI profile page pins 106,920 stars as its 2026-09-12 GitHub API reading, and index.html's agent card prints that snapshot as 107K.",
+      "value": "106,920 at 2026-09-12 (shown as 107K)",
+      "metric": "the Gemini CLI repository's stargazers_count at the pinned reading",
+      "method": "The page's Stars row is `107K（106,920，2026-09-12 GitHub API）`; index.html's agent card abbreviates the same snapshot and the footer repeats the date. The site-vs-page half is machine-checked by `star-snapshot-consistency`; only the live value needs the network.",
+      "repro": "curl -s https://api.github.com/repos/google-gemini/gemini-cli | grep stargazers_count",
+      "evidence": "https://api.github.com/repos/google-gemini/gemini-cli",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A live GitHub figure that moves continuously - 106,920 at the 2026-09-12 reading, 106,948 when re-read on 2026-09-13 - and reading it needs api.github.com, which a claim check must not require. The reason the pages print a precise count and date is exactly this: the number is a snapshot, and no committed file here derives it."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-memory-limits",
+      "claim": "Hermes' built-in memory is two files with documented caps: MEMORY.md at 2,200 characters (~800 tokens) and USER.md at 1,375 characters (~500 tokens), injected into the system prompt as a frozen snapshot.",
+      "value": "2,200 chars (~800 tokens) / 1,375 chars (~500 tokens)",
+      "metric": "the caps in Hermes' memory documentation",
+      "method": "The memory page and the memory-providers page both state the two caps; agents/hermes.md's 记忆 section and its Token-overhead table repeat them, and dimensions/memory.md quotes the character counts.",
+      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/features/memory | grep -o '2,200 chars[^U]*USER.md[^)]*)'",
+      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/features/memory",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "The caps are set and published by the Hermes docs (upstream, not committed here) and re-reading them needs the network. Corroborated on 2026-09-13: the fetched memory page still reads `MEMORY.md ... 2,200 chars (~800 tokens)` and `USER.md ... 1,375 chars (~500 tokens)`."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-memory-providers",
+      "claim": "Hermes ships eight optional external memory-provider plugins - honcho, openviking, mem0, hindsight, holographic, retaindb, byterover, supermemory - of which one can be active at a time.",
+      "value": "8 providers",
+      "metric": "the provider plugin list in Hermes' memory documentation",
+      "method": "agents/hermes.md's memory section names all eight and dimensions/memory.md repeats the count and the list; index.html's matrix cell says \"built-in + 8 providers\".",
+      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/features/memory | grep -o -i 'honcho\\|openviking\\|mem0\\|hindsight\\|holographic\\|retaindb\\|byterover\\|supermemory' | sort -u",
+      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "An upstream plugin list: the plugins are not in this repository and the docs need the network to re-read. Corroborated on 2026-09-13 - the memory page carries all eight names."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-security-layers",
+      "claim": "Hermes documents an eight-layer security model (user authorization, dangerous-command approval, file-write safety, container isolation, MCP credential filtering, context-file scanning, cross-session isolation, input sanitisation) with no unified \"Credential Guard\" chokepoint and no credential-access audit log.",
+      "value": "8 layers",
+      "metric": "the layer list in Hermes' security documentation",
+      "method": "agents/hermes.md's security section and dimensions/security.md both enumerate the eight layers and both state explicitly that the docs name no unified credential chokepoint - a correction this repository made rather than the flowery summary it previously carried.",
+      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/security | grep -o 'eight layers[^.]*'",
+      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/security",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "The layer list is upstream prose, not data committed here; re-reading it needs the network. Corroborated on 2026-09-13: the security page reads \"The security model has eight layers\", lists the same eight, and documents `approvals.mode: smart | manual | off` plus the Docker/Singularity/Modal/Daytona/Vercel container bypass."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-moa-hermesbench",
+      "claim": "Hermes' mixture-of-agents page reports HermesBench scores for a two-model MoA preset: 0.8202 for the opus-4.8 aggregator with a gpt-5.5 reference, against 0.7607 for claude-opus-4.8 alone and 0.7412 for gpt-5.5 alone.",
+      "value": "0.8202 / 0.7607 / 0.7412",
+      "metric": "the HermesBench table on the upstream mixture-of-agents page",
+      "method": "agents/hermes.md quotes all three with the vendor-report label, and dimensions/subagents.md quotes two of them (0.8202 vs 0.7607).",
+      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/features/mixture-of-agents | grep -o '0.8202[^<]*'",
+      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/features/mixture-of-agents",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor-published benchmark, not this repository's: the harness and the models are upstream, and re-reading the table needs the network. Corroborated on 2026-09-13 - the table still reads 0.8202 / 0.7607 / 0.7412."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-models-and-providers",
+      "claim": "Hermes accepts any OpenAI-compatible provider and its Nous Portal subscription offers 300+ models; the upstream README names no total provider count, so the pages publish no provider number for Hermes.",
+      "value": "300+ models (Nous Portal); no provider count published upstream",
+      "metric": "the upstream README's model statement and Nous Portal's model count",
+      "method": "agents/hermes.md's routing section quotes the upstream README line and then says explicitly that upstream gives no provider count, publishing the 300+ model figure instead; the README matrix's Model Lock cell says \"any OpenAI-compatible\" rather than a number.",
+      "repro": "curl -s https://github.com/NousResearch/hermes-agent#readme | grep -o 'Use any model you want[^.]*'",
+      "evidence": "https://github.com/NousResearch/hermes-agent#readme",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "Both halves are upstream statements - the README's routing sentence and Nous Portal's catalogue - and neither is committed here; re-reading them needs the network. Corroborated on 2026-09-13 for the README sentence; the 300+ figure is the vendor's own published count, not a measurement."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-session-search",
+      "claim": "Hermes' session_search uses a SQLite FTS5 index with no LLM call, documented at roughly a 20 ms query.",
+      "value": "~20 ms FTS5 query, no LLM call",
+      "metric": "the memory page's comparison-table latency for FTS5 search",
+      "method": "agents/hermes.md's memory section and Token-overhead table both carry it, each sourcing the memory docs.",
+      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/user-guide/features/memory | grep -o '~20ms[^|]*'",
+      "evidence": "https://hermes-agent.nousresearch.com/docs/user-guide/features/memory",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A latency figure documented upstream; measuring it here would mean installing Hermes and building an index, which is neither committed nor offline. Corroborated on 2026-09-13 (the page reads \"~20ms FTS5 query, ~1ms scroll\")."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-compaction-threshold",
+      "claim": "Hermes' automatic compaction fires at `threshold: 0.50` (prompt at 50% of the context window), and the docs' worked example compresses 45 messages / ~95K tokens into 25 messages / ~45K tokens.",
+      "value": "threshold 0.50; 45 msgs ~95K -> 25 msgs ~45K",
+      "metric": "the context-compression documentation's default threshold and worked example",
+      "method": "agents/hermes.md's Token-overhead table quotes both the threshold and the example numbers, sourced to the developer-guide page on context compression and caching.",
+      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching | grep -o 'threshold[^,]*'",
+      "evidence": "https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "Upstream documentation figures for a run of Hermes itself: no committed file derives them and re-reading needs the network. Corroborated on 2026-09-13 as the page's default and example, not as a measurement this repository made."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-prompt-cache-savings",
+      "claim": "Hermes' plugin documentation claims multi-turn prompt-cache savings of 75%+ of input tokens, because the system prompt is held constant across turns.",
+      "value": "75%+ input tokens",
+      "metric": "the claim in the upstream plugin developer-guide page",
+      "method": "agents/hermes.md's Token-overhead table carries it with the upstream link, labelled as the documentation's claim.",
+      "repro": "curl -s https://hermes-agent.nousresearch.com/docs/developer-guide/plugins | grep -o '75%[^.]*'",
+      "evidence": "https://hermes-agent.nousresearch.com/docs/developer-guide/plugins",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor claim about the vendor's own cache behaviour; verifying it needs a live Hermes install and API calls, neither committed here nor offline. Published on the page as a documentation claim, corroborated upstream on 2026-09-13."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "claude-context-and-model",
+      "claim": "Claude Code's context window is 1M tokens (Opus 4.8) - the model's published window, not a Claude Code measurement.",
+      "value": "1M (Opus 4.8)",
+      "metric": "the context-window specification on the Claude Opus 4.8 model page",
+      "method": "agents/claude-code.md's 基本信息 table and both README matrices carry 1M（Opus 4.8）; the README's source note links the model page.",
+      "repro": "curl -s https://platform.claude.com/docs/en/models/opus-4-8/overview | grep -io '1M\\|context window'",
+      "evidence": "https://platform.claude.com/docs/en/models/opus-4-8/overview",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor model specification, not a figure this repository computes; the model page needs the network and no committed file here pins the window. Corroborated on 2026-09-13 that the figure is the vendor's own published value (the page is the source the README has cited since 2026-09-12)."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "claude-swe-bench-88-6",
+      "claim": "Claude Code's matrix entry is 88.6% SWE-bench Verified, the vendor score for Opus 4.8 recorded in the Claude Opus 4.8 System Card §8.2 (2026-05-28).",
+      "value": "88.6% SWE-bench Verified",
+      "metric": "the SWE-bench Verified figure in the vendor system card",
+      "method": "README's Benchmark row, agents/claude-code.md's 基本信息 row and 优势 list all carry 88.6%; the README's source note links the system card and its section.",
+      "repro": "curl -s https://www.anthropic.com/claude-opus-4-8-system-card | grep -o '88.6[^%]*%'",
+      "evidence": "https://www.anthropic.com/claude-opus-4-8-system-card",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor-published benchmark result; running SWE-bench again is neither committed here nor offline, and the system card needs the network. Quoted with its section and date, as the page does."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "claude-release-dates",
+      "claim": "Claude Code shipped 2025-02-24 as a limited research preview and reached GA on 2025-05-22, per Anthropic's model announcements.",
+      "value": "2025-02-24 preview -> 2025-05-22 GA",
+      "metric": "the two announcement dates cited on the Claude Code page",
+      "method": "agents/claude-code.md's 首次发布 row carries both dates with links to the Claude 3.7 Sonnet and Claude 4 announcements.",
+      "repro": "curl -s https://www.anthropic.com/news/claude-4 | grep -io 'claude code[^.]*' | head -3",
+      "evidence": "https://www.anthropic.com/news/claude-3-7-sonnet; https://www.anthropic.com/news/claude-4",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "Vendor announcement dates, external to this repository; re-reading them needs the network and no committed file derives them. Published with both links inline, as CONTRIBUTING.md requires of a vendor figure."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "claude-tracking-incident-dates",
+      "claim": "The Claude Code tracking incident is recorded with only the dates the sources carry: tracking code from v2.1.91 (no published start date), removal in v2.1.197 on Jul 1-2 2026, and the MIIT NVDB finding on 2026-07-08 - with no blacklist count, because none was published.",
+      "value": "v2.1.91 / v2.1.197 (Jul 1-2, 2026) / 2026-07-08",
+      "metric": "the version range and dates in the incident write-ups",
+      "method": "agents/claude-code.md's 追踪事件 table and dimensions/security.md's incident section record the same three facts and both say explicitly that the earlier \"147+\" blacklist figure and the \"April 2\" start date were removed for lack of a source.",
+      "repro": "curl -s https://meshlaunch.com/en/blog/2026-claude-code-backdoor-miit-warning.html | grep -o 'v2\\.1\\.[0-9]*' | sort -u",
+      "evidence": "https://meshlaunch.com/en/blog/2026-claude-code-backdoor-miit-warning.html",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "The version numbers and dates come from third-party write-ups and a regulator notice (the NVDB notice itself could not be fetched directly, as the page notes); none of it is committed here and re-reading needs the network. The page's honesty about the missing start date and the deleted 147+ figure is the point of the claim."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "codex-context-and-benchmark",
+      "claim": "Codex runs with a 400K context window inside Codex and 1M on the API, and OpenAI's announced Terminal-Bench 2.0 score is 82.7% (2026-04-23).",
+      "value": "400K (Codex) / 1M (API); 82.7% Terminal-Bench 2.0",
+      "metric": "the context window and benchmark figure in OpenAI's GPT-5.5 announcement",
+      "method": "agents/codex.md's 基本信息 rows carry both, each linked to the announcement, and the README's Benchmark row carries the 82.7% with the same source; the page also notes OpenAI published no SWE-bench Verified figure there.",
+      "repro": "curl -s https://openai.com/index/introducing-gpt-5-5/ | grep -io 'terminal-bench[^<]*\\|82.7%'",
+      "evidence": "https://openai.com/index/introducing-gpt-5-5/",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor announcement, external to this repository and needing the network to re-read; no committed file derives either figure. Quoted with the date and link, and the pages are explicit that the vendor published no SWE-bench number in it."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "codex-output-price",
+      "claim": "GPT-5.5 output is priced at $30 per million tokens in OpenAI's announcement, which the Codex page cites as the reason long sessions burn cost.",
+      "value": "$30 / M output tokens",
+      "metric": "the token price in OpenAI's GPT-5.5 announcement",
+      "method": "agents/codex.md's 价格 row and its 劣势 list both carry the figure with the announcement link.",
+      "repro": "curl -s https://openai.com/index/introducing-gpt-5-5/ | grep -o '\\$30[^<]*'",
+      "evidence": "https://openai.com/index/introducing-gpt-5-5/",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor price, published on the vendor's site and changed at the vendor's discretion; re-reading needs the network and nothing committed here derives it. The page labels price rows as observed tiers, not quotes."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "opencode-provider-count",
+      "claim": "OpenCode supports 75+ model providers, including local models through Ollama.",
+      "value": "75+ providers",
+      "metric": "the provider count the OpenCode page and both README matrices publish",
+      "method": "agents/opencode.md's 模型 row and 优势 list carry 75+; the README's Model Lock cell for OpenCode is 75+ providers in both language tables.",
+      "repro": "curl -s https://github.com/anomalyco/opencode#readme | grep -io '75+[^.]*\\|providers'",
+      "evidence": "https://github.com/anomalyco/opencode",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "An upstream README figure for a project not committed here; re-reading needs the network. Published on the page as the upstream count."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "gemini-cli-antigravity-transition",
+      "claim": "Gemini CLI's free tier ended on 2026-06-18, when Google moved Gemini CLI and Gemini Code Assist to the multi-agent Antigravity CLI.",
+      "value": "2026-06-18 transition",
+      "metric": "the transition announcement's date",
+      "method": "agents/gemini-cli.md's 重大变更 section and the README's Gemini CLI price cell (free tier, then the Antigravity transition) both record it.",
+      "repro": "curl -s https://developers.googleblog.com/en/transitioning-gemini-cli-and-gemini-code-assist-to-antigravity/ | grep -io 'antigravity[^<]*' | head -3",
+      "evidence": "https://developers.googleblog.com/en/transitioning-gemini-cli-and-gemini-code-assist-to-antigravity/",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor product change with a vendor date, external to this repository; re-reading needs the network and no committed file derives the transition. The page marks the date and notes the free service ended."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "copilot-cli-ga-and-price",
+      "claim": "GitHub Copilot CLI reached GA on 2026-02-25 and costs $10/month on Copilot Pro, with one premium request consumed per prompt.",
+      "value": "GA 2026-02-25; $10/mo; 1 premium request per prompt",
+      "metric": "GitHub's GA announcement and Copilot Pro pricing",
+      "method": "agents/copilot-cli.md's GA 日期 and 价格 rows carry both, and the README matrix's Copilot CLI price cell is $10/mo.",
+      "repro": "curl -s https://github.blog/changelog/ | grep -io 'copilot cli[^<]*' | head -3",
+      "evidence": "https://github.com/github/copilot-cli/releases",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "Vendor announcement date and vendor pricing, both external and network-dependent; nothing committed here derives them. Published as observed tiers with the GA date the vendor announced."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "devin-pricing-tiers",
+      "claim": "Devin's self-serve plans, announced 2026-04-14, are Free, Pro $20/month, Max $200/month, Teams from $80/month (usage-based) and custom Enterprise.",
+      "value": "Free / $20 Pro / $200 Max / from $80 Teams",
+      "metric": "Cognition's 2026-04-14 self-serve plan announcement",
+      "method": "agents/devin.md's 价格 row and its 劣势 list both carry the tiers, linked to the Cognition announcement; the README's 成本不透明 note for Devin repeats the same 2026-04 change.",
+      "repro": "curl -s https://cognition.com/blog/new-self-serve-plans-for-devin | grep -io '\\$[0-9]*[^<]*' | head -5",
+      "evidence": "https://cognition.com/blog/new-self-serve-plans-for-devin",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "A vendor pricing announcement, external and network-dependent; no committed file derives the tiers and the vendor can change them at any time. The page labels them observed tiers, not quotes."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "windsurf-cognition-ownership",
+      "claim": "Windsurf was Codeium, Cognition announced an acquisition agreement in 2025-07, and from 2026-06 it is folded into Devin Desktop.",
+      "value": "2025-07 agreement; 2026-06 merge",
+      "metric": "the two Cognition blog dates cited on the Windsurf page",
+      "method": "agents/windsurf.md's 出品方 row carries both dates with links to Cognition's acquisition post and its one-year review; the README's Windsurf entry says Cognition (formerly Codeium).",
+      "repro": "curl -s https://cognition.com/blog/windsurf | grep -io 'windsurf[^<]*' | head -3",
+      "evidence": "https://cognition.com/blog/windsurf; https://cognition.com/blog/one-year-of-building-together",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "Corporate dates published by Cognition, external to this repository; re-reading needs the network and no committed file derives them. Both links are inline on the page, as the repository's content standard requires."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "page-ranges-without-source",
+      "claim": "Four agent pages state vendor ranges no upstream source is cited for: Cursor predicts 3-5 lines per completion and suits tasks of 10-20 files (and is said to fail past 20), Claude Code is described as running hundreds of sub-agents in one session, Copilot CLI carries a 2026-08 UI update, and omp's first release is dated 2026 年初.",
+      "value": "3-5 lines / 10-20 files / hundreds / 2026-08 / 2026 年初",
+      "metric": "unsourced numeric descriptions on agents/cursor.md, claude-code.md, copilot-cli.md and omp.md",
+      "method": "These are the pages' own descriptions of vendor product behaviour, written as ranges rather than as measured or vendor-published figures; unlike the tool counts, line counts and star counts, none of them carries a source URL, and CONTRIBUTING.md's content standard asks vendor figures to carry one.",
+      "repro": "grep -n '3-5 行\\|10-20 个文件\\|数百个 subagent\\|2026-08 更新\\|2026 年初' agents/*.md",
+      "evidence": "agents/cursor.md:22,31,56; agents/claude-code.md:27; agents/copilot-cli.md:33; agents/omp.md:14",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "No command can settle them: they describe vendor behaviour (how far ahead a completion looks, how large a task an agent handles, how many sub-agents run at once) rather than data in this repository, and the pages cite no upstream source to re-read - which is exactly why they are listed here instead of being dressed up as receipts. The inventory's sourced figures for these same pages are separate claims (for example `star-snapshot-gemini-cli`, `claude-context-and-model`, `omp-upstream-headline-figures`)."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "vendor-price-tiers",
+      "claim": "The Price row of the matrix is vendored data: Claude Code $20/$100/$200 per month, Codex $20-200 plus API tokens, Copilot CLI $10/mo, Cursor $20/mo Pro (heavy use $60-200), Windsurf $15/mo, Devin Free/$20/$200, and free bring-your-own-key for omp, Hermes, Aider, OpenCode and Cline.",
+      "value": "the eight CLI price cells + the IDE/platform pages",
+      "metric": "vendor pricing pages as observed on 2026-09-12",
+      "method": "Each agent page's 价格 row carries its tier with the vendor link where the vendor published one, and the README matrix repeats the CLI cells in both languages. The README's scope section states that price rows are indicative tiers as observed, not quotes.",
+      "repro": "grep -n '^| Price |' README.md",
+      "evidence": "README.md Terminal CLI Comparison Price row; agents/*.md 价格 rows",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "Vendor pricing, by definition outside this repository and changing on the vendors' schedule; a check cannot pin it offline, and the pages already label the rows as observed tiers. Machine-checking would freeze vendor prices, which is the drift the claim is warning about - hence manual, with the vendor links inline on the pages."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "benchmark-expected-results",
+      "claim": "The four benchmark result tables publish expected figures - search ~200 ms per shell-fork call and ~2 s for ten versus ~50 ms and ~300 ms in-process, hash anchoring saving 40-60% of output tokens, and 4-way parallel sub-agents at ~30% of serial time (3.3x) - and all of them are hypotheses written before running, not measurements.",
+      "value": "~200ms/~2s vs ~50ms/~300ms; 40-60% tokens; 3.3x parallel",
+      "metric": "the 预期结果 tables of benchmarks 1-4 in benchmarks/README.md",
+      "method": "benchmarks/README.md labels both result tables 预期结果 and states the omp in-process column is only measurable inside an omp session; the README's scope section and llms-full.txt both say nothing has been run and published, and that the repository therefore publishes no measured number of its own.",
+      "repro": "sed -n '/预期结果/,/^## /p' benchmarks/README.md",
+      "evidence": "benchmarks/README.md (Benchmark 1-4 expected tables); README.md \"When NOT to use it\"; llms-full.txt",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "No command can produce these figures because nothing was ever run: the search table's omp column needs a live omp session (search-bench.sh says so in its own output), the token table needs a model, and the parallelism table needs a harness. They are hypotheses for the runnable scripts beside them, and the pages say so. `bench-expected-labels` machine-checks that the tables keep that label."
+      },
+      "as_of": "2026-09-12"
+    },
+    {
+      "id": "hermes-release-dates",
+      "claim": "Hermes' earliest GitHub release tag is v2026.3.12 (2026-03-12), its current version on the page is v0.20.6 (2026-08-27), and the earliest PyPI publication is 0.13.0 on 2026-05-14.",
+      "value": "v2026.3.12 / v0.20.6 / 0.13.0",
+      "metric": "the release tags, the current release and the PyPI history of hermes-agent",
+      "method": "agents/hermes.md's 首个 Release and 当前版本 rows carry all three with links to the releases page.",
+      "repro": "curl -s https://api.github.com/repos/NousResearch/hermes-agent/releases | grep -o '\"tag_name\": \"[^\"]*\"' | tail -3",
+      "evidence": "https://github.com/NousResearch/hermes-agent/releases",
+      "verified": "2026-09-13",
+      "check": {
+        "manual": "Release history of an upstream project: it changes with every release (this is the drift the page warns about) and re-reading needs the network. No committed file here derives the tags or the PyPI dates."
+      },
+      "as_of": "2026-09-12"
+    }
+  ]
+}

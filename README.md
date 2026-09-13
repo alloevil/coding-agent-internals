@@ -281,7 +281,7 @@ Level 3: hash 锚定 + AST      ← omp（消除 whitespace 战争和 stale file
 
 ## When NOT to use it
 
-- **You want performance numbers.** There are none measured here — the only figures on the pages are vendor-published ones, each with its source URL. `benchmarks/` ships runnable scripts and a methodology, but its result tables are labelled *expected* (预期结果) — hypotheses, not measurements. Nothing has been run and published, and for that reason this repo publishes no `claims.json`.
+- **You want performance numbers.** There are none measured here — the only figures on the pages are vendor-published ones, each with its source URL. `benchmarks/` ships runnable scripts and a methodology, but its result tables are labelled *expected* (预期结果) — hypotheses, not measurements. Nothing has been run and published, so no `claims.json` entry claims a measured number: the file's machine-checked receipts cover only what the repository can recompute from its own committed data — page, table and script counts, the shape of the agent profiles, the star snapshots the pages pin — and every vendor-quoted figure in it is marked `manual` with its upstream URL.
 - **You want a ranking or a "best agent" verdict.** The catalogue sorts implementations into levels and names the trade-offs; it does not score agents overall.
 - **You need guaranteed-current information.** Every entry is a dated reading (as of 2026-09-12). Agents ship weekly — verify any cell your decision actually hinges on against the vendor's current docs.
 - **You need pricing you can budget against.** Price rows are indicative tiers as observed, not quotes.

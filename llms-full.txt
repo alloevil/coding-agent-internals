@@ -37,7 +37,7 @@ cd benchmarks
 
 ## Verifiable claims
 
-This project measures nothing itself. It records implementation facts obtained by reading each agent's source code, docs and release notes, and every number quoted from a vendor carries its source URL inline on the page that quotes it. The Evidence column below names where in this repository each claim is developed; the upstream sources themselves are linked from those pages. `benchmarks/README.md` contains tables labelled 预期结果 / *expected results*; those are hypotheses for the runnable scripts next to them, **not measurements**, and are not reproduced here. For the same reason this repository publishes no `claims.json`: it has no measured numbers of its own.
+This project measures nothing itself. It records implementation facts obtained by reading each agent's source code, docs and release notes, and every number quoted from a vendor carries its source URL inline on the page that quotes it. The Evidence column below names where in this repository each claim is developed; the upstream sources themselves are linked from those pages. `benchmarks/README.md` contains tables labelled 预期结果 / *expected results*; those are hypotheses for the runnable scripts next to them, **not measurements**, and are not reproduced here. For the same reason no `claims.json` entry carries a measured performance number: the file's machine-checked receipts cover only what this repository can recompute from its own committed data — page, table and script counts, the shape of the agent profiles, the star snapshots the pages pin — and every vendor-quoted figure in it is marked `manual` with its upstream source URL.
 
 | Claim | How it is verified | Evidence |
 |---|---|---|
