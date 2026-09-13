@@ -23,4 +23,4 @@ jobs:
       # the two shell benchmark helpers, which fall back to grep when rg is absent and use a temp directory,
       # so nothing is fetched and no dependency is installed. search-bench.sh skips cleanly when its default
       # target (./tc39-signals) is missing, which is exactly the state of a fresh checkout.
-      - uses: alloevil/verify-claims@v0.1.0
+      - uses: alloevil/verify-claims@v0.1.1
