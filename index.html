@@ -91,7 +91,17 @@
     .bilingual.show-en .zh, .bilingual.show-zh .en { display: none; }
     .bilingual.show-en .zh-inline, .bilingual.show-zh .en-inline { display: none; }
     .desc-en, .desc-zh { margin-bottom: 0.5rem; }
-  </style>
+  
+  /* reduced-motion：本页的动效只是悬停与筛选过渡，关掉后信息完全不变。 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
 </head>
 <body>
   <div class="container bilingual show-en">
